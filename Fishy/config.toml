@@ -1,0 +1,11 @@
+﻿# Example config file
+server_name = "Test Server"
+game_version = "1.1"
+max_players = 12
+code_only = true
+lobby_code = "NCRYPT"
+age_restricted = false
+world = "main_zone.tscn"
+admins = ["76561198321064030"]
+report_folder = "Reports"
+report_response = "Hello, your report has been received and will be looked at as soon as possible. In the meantime we recommend you to hide the offending player."
