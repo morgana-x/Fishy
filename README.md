@@ -39,9 +39,10 @@ I’ve made an effort to write clean, maintainable code so that anyone who wants
 As mentioned earlier, feel free to submit pull requests or open issues if you’d like to contribute! :)
 
 - [x] Complete basic server functionality
+- [ ] Release Windows and Linux builds
 - [ ] Improve spawning and events
 - [ ] Rework conversion between "GodotPackets" and C#
-- [ ] Develop admin system
+- [ ] Improve admin system (Reports, Admin-Commands, Banning/Kicking)
 - [ ] Address bug fixes (and even more bug fixes)
 
 ## License
@@ -59,3 +60,8 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+## Support me and my projects 
+
+### Liberapay
+<a href="https://liberapay.com/ncrypted-dev/donate"><img alt="Donate using Liberapay" src="https://liberapay.com/assets/widgets/donate.svg"></a>
