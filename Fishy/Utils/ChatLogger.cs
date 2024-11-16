@@ -10,9 +10,12 @@ namespace Fishy.Utils
     class ChatLogger
     {
         public static List<ChatMessage> ChatLogs = new List<ChatMessage>();
-        
+
         public static void Log(ChatMessage message)
-            => ChatLogs.Add(message);
+        {
+            ChatLogs.Add(message);
+            Console.WriteLine(message.ToString());
+        }
 
         public static string GetLog(SteamId? user = null)
         {
@@ -33,6 +36,7 @@ namespace Fishy.Utils
 
             return stringBuilder.ToString();
         }
+
     }
 
     public class ChatMessage (SteamId user, string message)

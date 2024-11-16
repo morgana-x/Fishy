@@ -68,6 +68,7 @@ namespace Fishy.Utils
         void SteamMatchmaking_OnLobbyMemberLeave(Lobby Lobby, Friend userLeaving)
         {
             UpdatePlayerCount();
+            Console.WriteLine($"A Player Left: {userLeaving.Name}");
             Fishy.Players.RemoveAll(player => player.SteamID.Equals(userLeaving.Id));
         }
 
@@ -78,9 +79,10 @@ namespace Fishy.Utils
         }
 
 
-        private static void UpdatePlayerCount()
+        private void UpdatePlayerCount()
         {
-            //TODO: implement
+            Lobby.SetData("name", SteamClient.Name);
+            Lobby.SetData("lobby_name", SteamClient.Name);
         }
     }
 }

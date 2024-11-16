@@ -12,7 +12,7 @@ namespace Fishy.Utils
     class CommandHandler
     {
         public static List<string> PublicCommands = ["report"];
-        public static List<string> AdminCommands = ["spawn", "kick", "visible"];
+        public static List<string> AdminCommands = ["spawn", "kick", "visible", "codeonly"];
 
         public static void OnMessage(SteamId from, string command)
         {
@@ -29,7 +29,9 @@ namespace Fishy.Utils
             switch (commandParams[0])
             {
                 case "kick":
-                    //TODO:
+                    Player? p = Fishy.Players.Find(p => p.Name.Equals(commandParams[1]));
+                    if (p != null)
+                        new KickPacket().SendPacket("single", (int)CHANNELS.GAME_STATE, p.SteamID);
                     break;
                 case "spawn":
                     switch (commandParams[1])
@@ -53,6 +55,9 @@ namespace Fishy.Utils
                     break;
                 case "visible":
                     Fishy.SteamHandler.Lobby.SetJoinable(commandParams[1] == "true");
+                    break;
+                case "codeonly":
+                    Fishy.SteamHandler.Lobby.SetData("type", commandParams[1] == "true" ? "code_only" : "public");
                     break;
                 case "report":
                     string reportPath = Path.Combine(AppContext.BaseDirectory, Fishy.Config.ReportFolder, DateTime.Now.ToString("ddMMyyyyHHmmss") + commandParams[1] + ".txt");

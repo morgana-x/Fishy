@@ -2,10 +2,16 @@
 server_name = "Test Server"
 game_version = "1.1"
 max_players = 12
-code_only = true
+# If set to true only players who know the lobby_code can join
+code_only = false
+# Should be a random six letter string
 lobby_code = "NCRYPT"
 age_restricted = false
+# Name of the world file in your Worlds folder
 world = "main_zone.tscn"
+# SteamID of the admins
 admins = ["76561198321064030"]
+# Folder where player reports should be saved
 report_folder = "Reports"
-report_response = "Hello, your report has been received and will be looked at as soon as possible. In the meantime we recommend you to hide the offending player."
+# This is the message the players gets after reporting someone
+report_response = "Hello, your report has been received and will be looked at as soon as possible. In the meantime we recommend you to hide/block the offending player."
