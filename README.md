@@ -41,7 +41,7 @@ As mentioned earlier, feel free to submit pull requests or open issues if you’
 - [x] Complete basic server functionality
 - [ ] Improve spawning and events
 - [ ] Rework conversion between "GodotPackets" and C#
-- [ ] Develop admin system
+- [ ] Improve admin system (Reports, Admin-Commands, Banning/Kicking)
 - [ ] Address bug fixes (and even more bug fixes)
 
 ## License
