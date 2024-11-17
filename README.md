@@ -39,10 +39,10 @@ I’ve made an effort to write clean, maintainable code so that anyone who wants
 As mentioned earlier, feel free to submit pull requests or open issues if you’d like to contribute! :)
 
 - [x] Complete basic server functionality
-- [ ] Release Windows and Linux builds
-- [ ] Improve spawning and events
+- [ ] Release Linux builds
+- [x] Improve spawning and events
 - [ ] Rework conversion between "GodotPackets" and C#
-- [ ] Improve admin system (Reports, Admin-Commands, Banning/Kicking)
+- [x] Improve admin system (Reports, Admin-Commands, Banning/Kicking)
 - [ ] Address bug fixes (and even more bug fixes)
 
 ## License
