@@ -14,6 +14,8 @@ namespace Fishy.Utils
         public static void Log(ChatMessage message)
         {
             ChatLogs.Add(message);
+            if (ChatLogs.Count > 100)
+                ChatLogs.RemoveAt(0);
             Console.WriteLine(message.ToString());
         }
 
@@ -33,17 +35,15 @@ namespace Fishy.Utils
                         stringBuilder.AppendLine(message.ToString());
                 }
             }
-
             return stringBuilder.ToString();
         }
-
     }
 
     public class ChatMessage (SteamId user, string message)
     {
         public DateTime SentAt { get; set; } = DateTime.Now;
         public string UserID { get; set; } = user.ToString();
-        public string UserName { get; set; } = Fishy.Players.FirstOrDefault(p => p.SteamID == user).Name ?? user.ToString();
+        public string UserName { get; set; } = Fishy.Players.FirstOrDefault(p => p.SteamID == user, new Models.Player(new SteamId(), "")).Name ?? user.ToString();
         public string Message { get; set; } = message;
 
         public override string ToString()

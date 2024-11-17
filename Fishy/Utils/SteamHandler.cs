@@ -36,7 +36,7 @@ namespace Fishy.Utils
         {
             Lobby.SetJoinable(true); 
             Lobby.SetData("ref", "webfishing_gamelobby");
-            Lobby.SetData("name", SteamClient.Name);
+            Lobby.SetData("name", Fishy.Config.ServerName);
             Lobby.SetData("version", Fishy.Config.GameVersion);
             Lobby.SetData("code", Fishy.Config.LobbyCode);
             Lobby.SetData("type", Fishy.Config.CodeOnly ? "code_only" : "public");
@@ -81,8 +81,8 @@ namespace Fishy.Utils
 
         private void UpdatePlayerCount()
         {
-            Lobby.SetData("name", SteamClient.Name);
-            Lobby.SetData("lobby_name", SteamClient.Name);
+            Lobby.SetData("name", Fishy.Config.ServerName);
+            Lobby.SetData("lobby_name", Fishy.Config.ServerName);
         }
     }
 }

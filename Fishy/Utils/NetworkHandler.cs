@@ -89,7 +89,9 @@ namespace Fishy.Utils
                     break;
                 case "new_player_join":
                     new MessagePacket("Welcome to the server!").SendPacket("single", (int)CHANNELS.GAME_STATE, packet.SteamId);
-                    new MessagePacket("This is a dedicated game lobby!").SendPacket("single", (int)CHANNELS.GAME_STATE, packet.SteamId);
+                    new MessagePacket(Fishy.Config.JoinMessage).SendPacket("single", (int)CHANNELS.GAME_STATE, packet.SteamId);
+                    if (Fishy.Config.Admins.Contains(packet.SteamId.Value.ToString()))
+                        new MessagePacket("A admin joined the lobby").SendPacket("all", (int)CHANNELS.GAME_STATE);
                     new HostPacket().SendPacket("all", (int)CHANNELS.GAME_STATE);
                     break;
                 case "instance_actor":

@@ -5,6 +5,8 @@ namespace Fishy.Models
     class Config
     {
         public string ServerName { get; set; } = String.Empty;
+        public string JoinMessage { get; set; } = String.Empty;
+        public string[] Rules { get; set; } = [];
         public string GameVersion { get; set; } = "1.1";
         public int MaxPlayers { get; set; } = 12;
         public bool CodeOnly { get; set; } = false;
@@ -23,6 +25,8 @@ namespace Fishy.Models
                 return false;
 
             ServerName = manager.ServerName;
+            JoinMessage = manager.JoinMessage;
+            Rules = manager.Rules;
             GameVersion = manager.GameVersion;
             CodeOnly = manager.CodeOnly;
             LobbyCode = manager.LobbyCode;

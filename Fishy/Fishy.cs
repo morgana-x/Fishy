@@ -1,4 +1,5 @@
 ﻿using Fishy.Models;
+using Fishy.Models.Packets;
 using Fishy.Utils;
 
 namespace Fishy
@@ -29,7 +30,12 @@ namespace Fishy
             Console.WriteLine("NetworkHandler was started successfully");
             Console.WriteLine("Creating Lobby...");
             SteamHandler.CreateLobby();
-            Console.ReadKey();
+            while (true)
+            {
+                string? message = Console.ReadLine();
+                if (message != null)
+                    new MessagePacket("Server: " + message).SendPacket("all", (int)CHANNELS.GAME_STATE);
+            }
         }
 
         static void LoadConfig()

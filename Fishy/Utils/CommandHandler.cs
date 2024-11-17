@@ -11,61 +11,96 @@ namespace Fishy.Utils
 {
     class CommandHandler
     {
-        public static List<string> PublicCommands = ["report"];
-        public static List<string> AdminCommands = ["spawn", "kick", "visible", "codeonly"];
+        public static List<string> PublicCommands = ["help", "rules", "report", "issue"];
+        public static List<string> AdminCommands = ["spawn", "kick", "visible", "codeonly", "issue"];
 
-        public static void OnMessage(SteamId from, string command)
+        public static void OnMessage(SteamId from, string message)
         {
-            string[] commandParams = command.Remove(0, 1).Split(" ");
+            string[] parameters = message.Remove(0, 1).Split(" ");
 
-            if (!PublicCommands.Contains(commandParams[0]) && !Fishy.Config.Admins.Contains(from.ToString()))
+
+            if ((!PublicCommands.Contains(parameters[0]) && !Fishy.Config.Admins.Contains(from.Value.ToString())))
             {
                 new MessagePacket("Invalid command or no permission.", "b30000").SendPacket("single", (int)CHANNELS.GAME_STATE, from);
                 return;
             }
 
-            if (commandParams.Length < 2) return;
-
-            switch (commandParams[0])
+            switch (parameters[0])
             {
                 case "kick":
-                    Player? p = Fishy.Players.Find(p => p.Name.Equals(commandParams[1]));
+                    if (parameters.Length < 2) return;
+                    Player? p = Fishy.Players.Find(p => p.Name.Equals(parameters[1]));
                     if (p != null)
                         new KickPacket().SendPacket("single", (int)CHANNELS.GAME_STATE, p.SteamID);
                     break;
                 case "spawn":
-                    switch (commandParams[1])
+                    if (parameters.Length < 2) return;
+                    switch (parameters[1])
                     {
                         case "fish":
                             Spawner.SpawnFish();
+                            new MessagePacket("A fish has been spawned!").SendPacket("single", (int)CHANNELS.GAME_STATE, from);
                             break;
-                        case "fish_alien":
+                        case "meteor":
                             Spawner.SpawnFish("fish_spawn_alien");
+                            new MessagePacket("A meteor has been spawned").SendPacket("single", (int)CHANNELS.GAME_STATE, from);
                             break;
                         case "rain":
                             Spawner.SpawnRainCloud();
+                            new MessagePacket("A raincloud has been spawned!").SendPacket("single", (int)CHANNELS.GAME_STATE, from);
                             break;
                         case "metal":
                             Spawner.SpawnMetalSpot();
+                            new MessagePacket("A metalspot has been spawned!").SendPacket("single", (int)CHANNELS.GAME_STATE, from);
                             break;
                         case "void_portal":
                             Spawner.SpawnVoidPortal();
+                            new MessagePacket("A voidportal has been spawned!").SendPacket("single", (int)CHANNELS.GAME_STATE, from);
                             break;
                     }
                     break;
-                case "visible":
-                    Fishy.SteamHandler.Lobby.SetJoinable(commandParams[1] == "true");
-                    break;
                 case "codeonly":
-                    Fishy.SteamHandler.Lobby.SetData("type", commandParams[1] == "true" ? "code_only" : "public");
+                    if (parameters.Length < 2) return;
+                    string type = parameters[1] == "true" ? "code_only" : "public";
+                    Fishy.SteamHandler.Lobby.SetData("type", type);
+                    new MessagePacket("The lobby type has been set to: " + type).SendPacket("single", (int)CHANNELS.GAME_STATE, from);
+                    break;
+                case "help":
+                    new MessagePacket("This is a Fishy dedicated server - https://github.com/ncrypted-dev/Fishy").SendPacket("single", (int)CHANNELS.GAME_STATE, from);
+                    new MessagePacket("The following commands are available: ").SendPacket("single", (int)CHANNELS.GAME_STATE, from);
+                    new MessagePacket("!help - Displays this info text").SendPacket("single", (int)CHANNELS.GAME_STATE, from);
+                    new MessagePacket("!rules - Displays the rules").SendPacket("single", (int)CHANNELS.GAME_STATE, from);
+                    new MessagePacket("!report PlayerName reason - Report a player").SendPacket("single", (int)CHANNELS.GAME_STATE, from);
+                    new MessagePacket("!issue Description - Report an issue on the server").SendPacket("single", (int)CHANNELS.GAME_STATE, from);
+                    break;
+                case "rules":
+                    foreach(string s in Fishy.Config.Rules)
+                        new MessagePacket(s).SendPacket("single", (int)CHANNELS.GAME_STATE, from);
                     break;
                 case "report":
-                    string reportPath = Path.Combine(AppContext.BaseDirectory, Fishy.Config.ReportFolder, DateTime.Now.ToString("ddMMyyyyHHmmss") + commandParams[1] + ".txt");
-                    string report = "Report for user: " + commandParams[1];
-                    report += "\nReason: " + commandParams[2];
+                    if (parameters.Length < 3) return;
+                    string reportPath = Path.Combine(AppContext.BaseDirectory, Fishy.Config.ReportFolder, DateTime.Now.ToString("ddMMyyyyHHmmss") + parameters[1] + ".txt");
+                    string report = "Report for user: " + parameters[1];
+                    report += "\nReason: " + String.Join(" ",parameters[2..]);
                     report += "\nChat Log:\n\n";
+
+                    string chatLog = String.Empty;
+                    Player ? player = Fishy.Players.FirstOrDefault(p => p.Name.Equals(parameters[1]));
+
+                    if (player != null)
+                        chatLog = ChatLogger.GetLog(player.SteamID);
+                    else
+                        chatLog = ChatLogger.GetLog();
+
                     File.WriteAllText(reportPath, report + ChatLogger.GetLog());
                     new MessagePacket(Fishy.Config.ReportResponse, "b30000").SendPacket("single", (int)CHANNELS.GAME_STATE, from);
+                    break;
+                case "issue":
+                    if (parameters.Length < 2) return;
+                    string issuePath = Path.Combine(AppContext.BaseDirectory, Fishy.Config.ReportFolder, DateTime.Now.ToString("ddMMyyyyHHmmss") + "issueReport.txt");
+                    string issueReport = "Issue Report\n" + String.Join(" ", parameters[1..]);
+                    File.WriteAllText(issuePath, issueReport);
+                    new MessagePacket("Your issues has been received and will be looked at as soon as possible.", "b30000").SendPacket("single", (int)CHANNELS.GAME_STATE, from);
                     break;
 
             }

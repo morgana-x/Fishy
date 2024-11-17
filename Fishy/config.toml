@@ -1,9 +1,13 @@
 ﻿# Example config file
-server_name = "Test Server"
+server_name = "Dedicated Server [Vanilla][Fishy]"
+# Message that the player gets when joining the server
+join_message = "This is a Fishy dedicated server - https://github.com/ncrypted-dev/Fishy. Type !rules or !help for further information."
+# Define the rules that should be displayed with !rules
+rules = ["1. No Racism, Sexism, Harassment or Hate-Speech", "2. No spamming", "3. No griefing (Chalk)", "4. Mods are allowed as long as they don't impact others"]
 game_version = "1.1"
 max_players = 12
 # If set to true only players who know the lobby_code can join
-code_only = false
+code_only = true
 # Should be a random six letter string
 lobby_code = "NCRYPT"
 age_restricted = false
