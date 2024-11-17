@@ -9,12 +9,12 @@ max_players = 12
 # If set to true only players who know the lobby_code can join
 code_only = true
 # Should be a random six letter string
-lobby_code = "NCRYPT"
+lobby_code = "DEDI12"
 age_restricted = false
 # Name of the world file in your Worlds folder
 world = "main_zone.tscn"
 # SteamID of the admins
-admins = ["76561198321064030"]
+admins = [""]
 # Folder where player reports should be saved
 report_folder = "Reports"
 # This is the message the players gets after reporting someone
