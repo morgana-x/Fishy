@@ -61,15 +61,17 @@ namespace Fishy.Utils
         {
             UpdatePlayerCount();
             Player player = new(userJoining.Id, userJoining.Name);
-            Console.WriteLine($"A Player Joined: {userJoining.Name}");
+            Console.WriteLine(DateTime.Now.ToString("dd.MM HH:mm:ss") + $" A Player Joined: {userJoining.Name}");
             Fishy.Players.Add(player);
+            Console.Title = $"Fishy Server - There are currently {Fishy.Players.Count} Players playing";
         }
 
         void SteamMatchmaking_OnLobbyMemberLeave(Lobby Lobby, Friend userLeaving)
         {
             UpdatePlayerCount();
-            Console.WriteLine($"A Player Left: {userLeaving.Name}");
+            Console.WriteLine(DateTime.Now.ToString("dd.MM HH:mm:ss") + $" A Player Left: {userLeaving.Name}");
             Fishy.Players.RemoveAll(player => player.SteamID.Equals(userLeaving.Id));
+            Console.Title = $"Fishy Server - There are currently {Fishy.Players.Count} Players playing";
         }
 
         void SteamMatchmaking_OnP2PSessionRequest(SteamId id)

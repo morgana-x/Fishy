@@ -45,7 +45,6 @@ namespace Fishy.Models
 
             Despawn = true;
             DespawnTime = 550;
-
         }
 
         public override void OnUpdate()

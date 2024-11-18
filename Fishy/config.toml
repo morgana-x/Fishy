@@ -14,7 +14,7 @@ age_restricted = false
 # Name of the world file in your Worlds folder
 world = "main_zone.tscn"
 # SteamID of the admins
-admins = [""]
+admins = ["76561198321064030"]
 # Folder where player reports should be saved
 report_folder = "Reports"
 # This is the message the players gets after reporting someone

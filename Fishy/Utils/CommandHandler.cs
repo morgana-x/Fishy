@@ -12,10 +12,11 @@ namespace Fishy.Utils
     class CommandHandler
     {
         public static List<string> PublicCommands = ["help", "rules", "report", "issue"];
-        public static List<string> AdminCommands = ["spawn", "kick", "visible", "codeonly", "issue"];
+        public static List<string> AdminCommands = ["spawn", "kick", "ban", "visible", "codeonly", "issue"];
 
         public static void OnMessage(SteamId from, string message)
         {
+
             string[] parameters = message.Remove(0, 1).Split(" ");
 
 
@@ -29,9 +30,23 @@ namespace Fishy.Utils
             {
                 case "kick":
                     if (parameters.Length < 2) return;
-                    Player? p = Fishy.Players.Find(p => p.Name.Equals(parameters[1]));
-                    if (p != null)
-                        new KickPacket().SendPacket("single", (int)CHANNELS.GAME_STATE, p.SteamID);
+                    Player? playerToKick = Fishy.Players.Find(p => p.Name.Equals(parameters[1])) 
+                        ?? Fishy.Players.Find(p => p.SteamID.Value.ToString().Equals(parameters[1]));
+                    if (playerToKick != null)
+                        new KickPacket().SendPacket("single", (int)CHANNELS.GAME_STATE, playerToKick.SteamID);
+                    break;
+                case "ban":
+                    if (parameters.Length < 2) return;
+                    Player? playerToBan = Fishy.Players.Find(p => p.Name.Equals(parameters[1]))
+                        ?? Fishy.Players.Find(p => p.SteamID.Value.ToString().Equals(parameters[1]));
+                    if (playerToBan != null)
+                    {
+                        new BanPacket().SendPacket("single", (int)CHANNELS.GAME_STATE, playerToBan.SteamID);
+                        new ForceDisconnectPacket(playerToBan.SteamID.Value.ToString()).SendPacket("all", (int)CHANNELS.GAME_STATE);
+                        using StreamWriter writer = new(Path.Combine(AppContext.BaseDirectory, "bans.txt"), true);
+                        writer.WriteLine(playerToBan.SteamID.Value.ToString());
+                        Fishy.BannedUsers.Add(playerToBan.SteamID.Value.ToString());
+                    }
                     break;
                 case "spawn":
                     if (parameters.Length < 2) return;
