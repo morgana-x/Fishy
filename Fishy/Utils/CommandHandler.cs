@@ -43,6 +43,7 @@ namespace Fishy.Utils
                     {
                         new BanPacket().SendPacket("single", (int)CHANNELS.GAME_STATE, playerToBan.SteamID);
                         new ForceDisconnectPacket(playerToBan.SteamID.Value.ToString()).SendPacket("all", (int)CHANNELS.GAME_STATE);
+                        SteamHandler.UpdateSteamBanList(playerToBan.SteamID.Value.ToString(), Fishy.SteamHandler.Lobby);
                         using StreamWriter writer = new(Path.Combine(AppContext.BaseDirectory, "bans.txt"), true);
                         writer.WriteLine(playerToBan.SteamID.Value.ToString());
                         Fishy.BannedUsers.Add(playerToBan.SteamID.Value.ToString());

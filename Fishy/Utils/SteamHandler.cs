@@ -31,6 +31,14 @@ namespace Fishy.Utils
             SteamMatchmaking.CreateLobbyAsync(Fishy.Config.MaxPlayers);
         }
 
+        public static void UpdateSteamBanList(string BannedPlayerSteamID, Lobby Lobby)
+        {
+            if (string.IsNullOrEmpty(BannedPlayerSteamID)) return; 
+
+            string BanList = Lobby.GetData("banned_players");
+            BanList = string.IsNullOrEmpty(BanList) ? BannedPlayerSteamID : $"{BannedPlayerSteamID},{BanList}";
+            Lobby.SetData("banned_players", BanList);
+        }
 
         void SteamMatchmaking_OnLobbyCreated(Result result, Lobby Lobby)
         {
