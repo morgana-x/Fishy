@@ -31,15 +31,6 @@ namespace Fishy.Utils
             SteamMatchmaking.CreateLobbyAsync(Fishy.Config.MaxPlayers);
         }
 
-        public static void UpdateSteamBanList(string BannedPlayerSteamID, Lobby Lobby)
-        {
-            if (string.IsNullOrEmpty(BannedPlayerSteamID)) return; 
-
-            string BanList = Lobby.GetData("banned_players");
-            BanList = string.IsNullOrEmpty(BanList) ? BannedPlayerSteamID : $"{BannedPlayerSteamID},{BanList}";
-            Lobby.SetData("banned_players", BanList);
-        }
-
         void SteamMatchmaking_OnLobbyCreated(Result result, Lobby Lobby)
         {
             Lobby.SetJoinable(true); 
@@ -93,6 +84,22 @@ namespace Fishy.Utils
         {
             Lobby.SetData("name", Fishy.Config.ServerName);
             Lobby.SetData("lobby_name", Fishy.Config.ServerName);
+        }
+
+        public void UpdateSteamBanList(string bannedPlayerSteamID)
+        {
+            if (string.IsNullOrEmpty(bannedPlayerSteamID)) return;
+
+            string banList = Lobby.GetData("banned_players");
+            banList = String.IsNullOrEmpty(banList) ? bannedPlayerSteamID : $"{bannedPlayerSteamID},{banList}";
+            Lobby.SetData("banned_players", banList);
+        }
+
+        public void SetSteamBanList(List<string> bannedPlayers)
+        {
+            if (bannedPlayers.Count == 0) return;
+            string banList = String.Join(",", bannedPlayers);
+            Lobby.SetData("banned_players", banList);
         }
     }
 }

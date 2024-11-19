@@ -15,6 +15,7 @@ namespace Fishy
         public static List<string> BannedUsers = [];
         static readonly string configPath = Path.Combine(AppContext.BaseDirectory, "config.toml");
         static readonly string bansPath = Path.Combine(AppContext.BaseDirectory, "bans.txt");
+        static List<string> commandBuffer = [];
 
         public static void Init()
         {
@@ -25,19 +26,26 @@ namespace Fishy
             LoadConfig();
             Console.WriteLine("Reading world file...");
             LoadWorld();
-            Console.WriteLine("Reading Banned players...");
-            LoadBannedPlayers();
             Console.WriteLine("Initializing Steam Client...");
             InitSteam();
+            Console.WriteLine("Reading Banned players...");
+            LoadBannedPlayers();
             Console.WriteLine("Starting NetworkHandler...");
             NetworkHandler.Start();
             Console.WriteLine("NetworkHandler was started successfully");
             Console.WriteLine("Creating Lobby...");
             SteamHandler.CreateLobby();
+            Task.Run(() => ListenForInput());
             while (true)
             {
+            }
+        }
+
+        static void ListenForInput()
+        {
+            while (true) { 
                 string? message = Console.ReadLine();
-                if (message != null)
+                if (!String.IsNullOrEmpty(message))
                     new MessagePacket("Server: " + message).SendPacket("all", (int)CHANNELS.GAME_STATE);
             }
         }
@@ -84,6 +92,8 @@ namespace Fishy
             using StreamReader banReader = new(bansPath);
             while (!banReader.EndOfStream)
                 BannedUsers.Add(banReader.ReadLine() ?? "");
+
+            SteamHandler.SetSteamBanList(BannedUsers);
 
             Console.WriteLine("Bans were read successfully");
         }

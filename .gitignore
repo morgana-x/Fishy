@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 
 *.tscn
+/Fishy/config.toml

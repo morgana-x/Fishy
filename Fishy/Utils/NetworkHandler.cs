@@ -179,20 +179,19 @@ namespace Fishy.Utils
             _actorUpdateCount++;
             foreach (Actor actor in Fishy.Actors.ToList())
             {
-
                 actor.OnUpdate();
 
                 if (!PreviousPositions.ContainsKey(actor.InstanceID))
                     PreviousPositions[actor.InstanceID] = Vector3.Zero;
 
-                if (actor.Position != PreviousPositions[actor.InstanceID] && _actorUpdateCount == 30)
+                if (actor.Position != PreviousPositions[actor.InstanceID] && _actorUpdateCount == 20)
                 {
                     PreviousPositions[actor.InstanceID] = actor.Position;
                     new ActorUpdatePacket(actor.InstanceID, actor.Position, actor.Rotation).SendPacket("all", (int)CHANNELS.GAME_STATE);
                 }
             }
 
-            if (_actorUpdateCount > 30)
+            if (_actorUpdateCount >= 20)
                 _actorUpdateCount = 0;
         }
     }
