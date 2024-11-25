@@ -14,8 +14,15 @@ age_restricted = false
 # Name of the world file in your Worlds folder
 world = "main_zone.tscn"
 # SteamID of the admins
-admins = ["76561198321064030"]
+admins = [""]
 # Folder where player reports should be saved
 report_folder = "Reports"
 # This is the message the players gets after reporting someone
 report_response = "Hello, your report has been received and will be looked at as soon as possible. In the meantime we recommend you to hide/block the offending player."
+
+# This is where certain settings can be set for plugins
+[plugins.webserver]
+# Username for the webinterface
+username = "admin"
+# Password - SHA512 hash (default=admin)
+password = "c7ad44cbad762a5da0a452f9e854fdc1e0e7a52a38015f23f3eab1d80b931dd472634dfac71cd34ebc35d16ab7fb8a90c81f975113d6c7538dc69dd8de9077ec"

@@ -23,6 +23,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <TargetPath>libsteam_api.so</TargetPath>
     </None>
+    <None Update="Plugins\Fishy.Webserver.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Worlds\main_zone.tscn">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

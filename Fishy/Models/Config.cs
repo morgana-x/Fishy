@@ -1,8 +1,9 @@
 ﻿using Tomlyn;
+using Tomlyn.Model;
 
 namespace Fishy.Models
 {
-    class Config
+    public class Config
     {
         public string ServerName { get; set; } = String.Empty;
         public string JoinMessage { get; set; } = String.Empty;
@@ -16,10 +17,13 @@ namespace Fishy.Models
         public List<string> Admins { get; set; } = [];
         public string ReportFolder { get; set; } = "Reports";
         public string ReportResponse { get; set; } = "";
+        public TomlTable Plugins { get; set; } = new();
 
         public bool LoadConfig(string configPath)
         {
             string cfg = File.ReadAllText(configPath);
+            var toml = Toml.ToModel(cfg);
+
             bool valid = Toml.TryToModel(cfg, out Config? manager, out _);
             if (!valid || manager == null)
                 return false;
@@ -36,7 +40,19 @@ namespace Fishy.Models
             Admins = manager.Admins;
             ReportFolder = manager.ReportFolder;
             ReportResponse = manager.ReportResponse;
+            Plugins = manager.Plugins;
             return true;
+        }
+
+        public Dictionary<string, object> GetConfigValue(string table)
+        {
+            object? tempTable;
+            bool parsed = Plugins.TryGetValue(table, out tempTable);
+            if (!parsed || tempTable is not TomlTable)
+                return [];
+
+            TomlTable tomlTable = tempTable as TomlTable ?? new TomlTable();
+            return tomlTable.ToDictionary() ?? [];
         }
     }
 }

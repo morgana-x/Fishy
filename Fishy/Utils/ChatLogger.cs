@@ -9,7 +9,7 @@ namespace Fishy.Utils
 {
     class ChatLogger
     {
-        public static List<ChatMessage> ChatLogs = new List<ChatMessage>();
+        public static List<ChatMessage> ChatLogs = [];
 
         public static void Log(ChatMessage message)
         {
@@ -21,7 +21,7 @@ namespace Fishy.Utils
 
         public static string GetLog(SteamId? user = null)
         {
-            StringBuilder stringBuilder = new StringBuilder();
+            StringBuilder stringBuilder = new();
 
             foreach (ChatMessage message in ChatLogs)
             {
@@ -48,7 +48,7 @@ namespace Fishy.Utils
 
         public override string ToString()
         {
-            return $"{SentAt.ToString("dd.MM HH:mm:ss")} {UserName}({UserID}): {Message}";
+            return $"{SentAt:dd.MM HH:mm:ss} {UserName}({UserID}): {Message}";
         }
     }
 }

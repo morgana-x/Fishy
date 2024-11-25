@@ -3,7 +3,7 @@ using System.Numerics;
 
 namespace Fishy.Models
 {
-    class Player
+    public class Player
     {
         public SteamId SteamID { get; set; }
         public string ID { get; set; }

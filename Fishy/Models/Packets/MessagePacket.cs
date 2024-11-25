@@ -1,4 +1,7 @@
 ﻿using System.Numerics;
+using Fishy.Extensions;
+using Fishy.Utils;
+using Steamworks;
 
 namespace Fishy.Models.Packets
 {
@@ -12,5 +15,15 @@ namespace Fishy.Models.Packets
         public string Zone { get; set; } = "main_zone";
         public int Zone_Owner { get; set; } = 1;
 
+        public override void SendPacket(string target = "all", int channel = 0, SteamId steamId = default)
+        {
+            base.SendPacket(target, channel, steamId);
+            if (target != "all") return;
+            ChatMessage chatMessage = new(SteamClient.SteamId, Message);
+            ChatLogger.Log(chatMessage);
+            foreach (FishyExtension ex in Fishy.Extensions)
+                ex.OnChatMessage(chatMessage);
+        }
     }
+
 }

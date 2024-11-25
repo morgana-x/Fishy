@@ -1,21 +1,23 @@
-﻿using Fishy.Models;
+﻿using Fishy.Extensions;
+using Fishy.Models;
 using Fishy.Models.Packets;
 using Fishy.Utils;
+using Steamworks;
 
 namespace Fishy
 {
     class Fishy
     {
-        public static Config Config = new();
-        public static World World = new();
-        public static List<Player> Players = [];
-        public static List<Actor> Actors = [];
-        public static SteamHandler SteamHandler = new();
-        public static NetworkHandler NetworkHandler = new();
-        public static List<string> BannedUsers = [];
+        internal static Config Config = new();
+        internal static World World = new();
+        internal static List<Player> Players = [];
+        internal static List<Actor> Actors = [];
+        internal static SteamHandler SteamHandler = new();
+        internal static NetworkHandler NetworkHandler = new();
+        internal static List<string> BannedUsers = [];
+        internal static List<FishyExtension> Extensions = [];
         static readonly string configPath = Path.Combine(AppContext.BaseDirectory, "config.toml");
         static readonly string bansPath = Path.Combine(AppContext.BaseDirectory, "bans.txt");
-        static List<string> commandBuffer = [];
 
         public static void Init()
         {
@@ -35,10 +37,16 @@ namespace Fishy
             Console.WriteLine("NetworkHandler was started successfully");
             Console.WriteLine("Creating Lobby...");
             SteamHandler.CreateLobby();
-            Task.Run(() => ListenForInput());
-            while (true)
+            Console.WriteLine("Loading Extensions...");
+            Extensions = ExtensionLoader.GetExtensions();
+            foreach(FishyExtension extension in Extensions)
             {
+                Console.WriteLine($"Loading Extension: {extension.GetType()}");
+                Task.Run(extension.OnInit);
             }
+            Console.WriteLine($"{Extensions.Count} Extensions were loaded");
+            Task.Run(() => ListenForInput());
+            while (true) {}
         }
 
         static void ListenForInput()

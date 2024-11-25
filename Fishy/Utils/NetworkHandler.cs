@@ -1,4 +1,5 @@
-﻿using Fishy.Helper;
+﻿using Fishy.Extensions;
+using Fishy.Helper;
 using Fishy.Models;
 using Fishy.Models.Packets;
 using Steamworks;
@@ -7,7 +8,7 @@ using System.Numerics;
 
 namespace Fishy.Utils
 {
-    enum CHANNELS
+    public enum CHANNELS
     {
         ACTOR_UPDATE,
         ACTOR_ACTION,
@@ -97,7 +98,7 @@ namespace Fishy.Utils
                         new MessagePacket("Welcome to the server!").SendPacket("single", (int)CHANNELS.GAME_STATE, packet.SteamId);
                         new MessagePacket(Fishy.Config.JoinMessage).SendPacket("single", (int)CHANNELS.GAME_STATE, packet.SteamId);
                         if (Fishy.Config.Admins.Contains(packet.SteamId.Value.ToString()))
-                            new MessagePacket("A admin joined the lobby").SendPacket("all", (int)CHANNELS.GAME_STATE);
+                            new MessagePacket("An admin has joined the lobby").SendPacket("all", (int)CHANNELS.GAME_STATE);
                         new HostPacket().SendPacket("all", (int)CHANNELS.GAME_STATE);
                         break;
                     case "instance_actor":
@@ -169,6 +170,8 @@ namespace Fishy.Utils
         {
             ChatLogger.Log(new ChatMessage(id, message));
             Player player = Fishy.Players.First(player => player.SteamID.Equals(id)) ?? new Player(0, "");
+            foreach (FishyExtension e in Fishy.Extensions)
+                e.OnChatMessage(new ChatMessage(player.SteamID, message));
             if (player.Name == "" || !message.StartsWith('!')) return;
             CommandHandler.OnMessage(id, message);
         }
