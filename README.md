@@ -2,8 +2,8 @@
 
 Fishy is a "**work in progress**" vanilla dedicated server for Webfishing written in C#.
 
-> [!CAUTION]
-> Fishy is still in early development, so please don’t expect everything to work perfectly just yet!
+> [!WARNING]
+> Fishy is in Beta—it's largely stable, but some minor issues may occur, and a few features are still in progress.
 
 ## Why a dedicated server?
 I’ve always loved the concept and style of Webfishing, but there’s one issue that has always bothered me: 
