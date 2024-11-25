@@ -56,7 +56,7 @@ I’ve made an effort to write clean, maintainable code so that anyone who wants
 As mentioned earlier, feel free to submit pull requests or open issues if you’d like to contribute! :)
 
 - [x] Complete basic server functionality
-- [ ] Release Linux builds
+- [x] Release Linux builds (There is now packaged as a portable executable)
 - [x] Improve spawning and events
 - [ ] Rework conversion between "GodotPackets" and C#
 - [x] Improve admin system (Reports, Admin-Commands, Banning/Kicking)
