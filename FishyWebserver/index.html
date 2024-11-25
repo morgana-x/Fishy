@@ -122,6 +122,11 @@
             playerList.appendChild(playerElement)
         });
 
+        eventSource.addEventListener('leave', event => {
+            let playerElement = document.getElementById(event.data);
+            playerList.removeChild(playerElement)
+        });
+
         eventSource.onerror = function () {
             console.error('Connection to the server lost.');
         };

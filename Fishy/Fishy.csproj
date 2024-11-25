@@ -33,15 +33,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <TargetPath>steam_api.dll</TargetPath>
     </None>
-    <None Update="Dependencies\steam_api.lib">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Dependencies\win64\steam_api64.dll">
+    <None Update="Dependencies\steam_api64.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <TargetPath>steam_api64.dll</TargetPath>
-    </None>
-    <None Update="Dependencies\win64\steam_api64.lib">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
