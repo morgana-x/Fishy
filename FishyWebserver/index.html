@@ -71,7 +71,7 @@
         </div>
     </main>
     <script>
-        const eventSource = new EventSource('http://localhost:8080/status/');
+        const eventSource = new EventSource('/status');
         const chat = document.getElementById('chat');
         const playerList = document.getElementById('playerlist');
         const message = document.getElementById('message');
