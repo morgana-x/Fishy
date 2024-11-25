@@ -20,16 +20,33 @@ While mods aren't a primary focus right now, you're welcome to contribute via pu
 
 I’ve made an effort to write clean, maintainable code so that anyone who wants to contribute can easily get involved.
 
+## Features
+
+- Near-complete actor support
+- Highly customizable via config.toml
+- Player and admin commands
+- Extensions support (webserver plugin included)
+
 ## How to host your own Server
 > [!IMPORTANT]
 > You will need a second Steam account with the game purchased in order to host your own server.
 
-1. **Install Steam** on your server and download Webfishing.
+1. **Install Steam** on your server and download Webfishing
 2. **Extract** the main_zone.tscn from the game ([Example Tool](https://github.com/bruvzg/gdsdecomp))
 3. **Download** Fishy from the Releases page
 4. **Copy** the main_zone.tscn into the Worlds folder
 5. **Modify** the config.toml file to your likings
 6. **Start** Fishy
+
+**Using the Webserver plugin?** Visit [http://localhost:8080](http://localhost:8080) and log in with the credentials from config.toml
+
+## How to create your own Extensions
+
+- Reference Fishy.dll
+- Create a main plugin class inheriting from FishyExtension
+- Override functions to add custom logic
+- Compile the plugin into a single .dll (e.g., using Costura.Fody)
+- Add the .dll to the Plugins folder
 
 ## Similar Projects
 - WebfishingCove <https://github.com/DrMeepso/WebFishingCove/>
