@@ -99,6 +99,7 @@ namespace Fishy.Utils
                         new MessagePacket(Fishy.Config.JoinMessage).SendPacket("single", (int)CHANNELS.GAME_STATE, packet.SteamId);
                         if (Fishy.Config.Admins.Contains(packet.SteamId.Value.ToString()))
                             new MessagePacket("An admin has joined the lobby").SendPacket("all", (int)CHANNELS.GAME_STATE);
+                        SendCanvasData(packet.SteamId);
                         new HostPacket().SendPacket("all", (int)CHANNELS.GAME_STATE);
                         break;
                     case "instance_actor":
@@ -149,6 +150,28 @@ namespace Fishy.Utils
                         string body = data["body"].ToString() ?? "";
                         CommandHandler.OnMessage(packet.SteamId, body);
                         break;
+                    case "chalk_packet":
+                        var ChalkPacketData = (Dictionary<int, object>)packetInfo["data"];
+                        int CanvasID = Convert.ToInt32(packetInfo["canvas_id"]);
+
+                        while (Fishy.CanvasData.Count <= CanvasID)
+                        {
+                            Fishy.CanvasData.Add(null);
+                        }
+
+                        if (Fishy.CanvasData[CanvasID] == null)
+                            Fishy.CanvasData[CanvasID] = new Dictionary<Vector2, int>();
+
+                        foreach (var DataPointObj in ChalkPacketData.Values)
+                        {
+                            Dictionary<int, object> DataPoint = (Dictionary<int, object>)DataPointObj;
+                            var chalkLocation = (Vector2)DataPoint[0];
+                            var chalkColor = Convert.ToInt32(DataPoint[1]);
+
+                            if (!Fishy.CanvasData[CanvasID].ContainsKey(chalkLocation))
+                                Fishy.CanvasData[CanvasID].Add(chalkLocation, chalkColor);
+                        }
+                        break;
                     default: break;
 
                 }
@@ -163,7 +186,6 @@ namespace Fishy.Utils
             new ActorRemovePacket(instance.InstanceID).SendPacket("all", (int)CHANNELS.GAME_STATE);
             Fishy.Actors.Remove(instance);
         }
-
 
 
         static void OnChat(string message, SteamId id)
@@ -196,6 +218,21 @@ namespace Fishy.Utils
 
             if (_actorUpdateCount >= 20)
                 _actorUpdateCount = 0;
+        }
+
+
+        static void SendCanvasData(SteamId id)
+        {
+            int i = 0;
+
+            foreach(Dictionary<Vector2, int> Canvas in Fishy.CanvasData)
+            {
+                if (Canvas == null) continue;
+
+                new ChalkPacket(i, Canvas).SendPacket("single", (int)CHANNELS.CHALK, id);
+
+                i++;
+            }
         }
     }
 }
