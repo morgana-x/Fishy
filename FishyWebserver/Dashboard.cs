@@ -1,8 +1,10 @@
-﻿using Fishy.Models;
+﻿using System.Text.Json;
+using Fishy.Models;
 using Fishy.Models.Packets;
 using Fishy.Utils;
 using GenHTTP.Engine.Internal;
 using GenHTTP.Modules.Authentication;
+using GenHTTP.Modules.Controllers;
 using GenHTTP.Modules.Functional;
 using GenHTTP.Modules.IO;
 using GenHTTP.Modules.Layouting;
@@ -20,12 +22,11 @@ namespace Fishy.Webserver
         {
             var mainPage = Content.From(Resource.FromAssembly("index.html"));
             var syncEvent = EventSource.Create().Generator(SyncStats);
-            var chatService = Inline.Create().Post(([FromBody] string message) => WebserverExtension.SendPacketToAll(new MessagePacket("Server: " + message)));
 
             var app = Layout.Create()
                 .Index(mainPage)
                 .Add("status", syncEvent)
-                .Add("chat", chatService)
+                .AddController<ActionController>("action")
                 .Authentication(Authentication.Auth);
 
             Host.Create()
@@ -33,12 +34,13 @@ namespace Fishy.Webserver
                 .Handler(app)
                 .RunAsync();
         }
-        
+
+
         async ValueTask SyncStats(IEventConnection connection)
         {
             // Resync data on reload
             foreach (Player p in WebserverExtension.Players)
-                await connection.DataAsync(p.Name, "join");
+                await connection.DataAsync(JsonSerializer.Serialize(p), "join");
 
             foreach (ChatMessage m in WebserverExtension.ChatLog)
                 await connection.DataAsync(m.ToString(), "message");
@@ -63,7 +65,7 @@ namespace Fishy.Webserver
                 {
                     foreach (KeyValuePair<Player, string> p in PlayersToSync.ToDictionary())
                     {
-                        await connection.DataAsync(p.Key.Name, p.Value);
+                        await connection.DataAsync(JsonSerializer.Serialize(p.Key), p.Value);
                         PlayersToSync.Remove(p.Key);
                     }
                 }

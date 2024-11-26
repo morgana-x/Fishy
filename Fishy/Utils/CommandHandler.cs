@@ -33,21 +33,14 @@ namespace Fishy.Utils
                     Player? playerToKick = Fishy.Players.Find(p => p.Name.Equals(parameters[1])) 
                         ?? Fishy.Players.Find(p => p.SteamID.Value.ToString().Equals(parameters[1]));
                     if (playerToKick != null)
-                        new KickPacket().SendPacket("single", (int)CHANNELS.GAME_STATE, playerToKick.SteamID);
+                        Punish.KickPlayer(playerToKick);
                     break;
                 case "ban":
                     if (parameters.Length < 2) return;
                     Player? playerToBan = Fishy.Players.Find(p => p.Name.Equals(parameters[1]))
                         ?? Fishy.Players.Find(p => p.SteamID.Value.ToString().Equals(parameters[1]));
                     if (playerToBan != null)
-                    {
-                        new BanPacket().SendPacket("single", (int)CHANNELS.GAME_STATE, playerToBan.SteamID);
-                        new ForceDisconnectPacket(playerToBan.SteamID.Value.ToString()).SendPacket("all", (int)CHANNELS.GAME_STATE);
-                        Fishy.SteamHandler.UpdateSteamBanList(playerToBan.SteamID.Value.ToString());
-                        using StreamWriter writer = new(Path.Combine(AppContext.BaseDirectory, "bans.txt"), true);
-                        writer.WriteLine(playerToBan.SteamID.Value.ToString());
-                        Fishy.BannedUsers.Add(playerToBan.SteamID.Value.ToString());
-                    }
+                        Punish.BanPlayer(playerToBan);
                     break;
                 case "spawn":
                     if (parameters.Length < 2) return;

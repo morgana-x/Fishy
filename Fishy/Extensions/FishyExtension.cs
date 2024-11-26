@@ -31,5 +31,32 @@ namespace Fishy.Extensions
 
         public static void SendPacketToPlayer(FPacket packet, SteamId player)
             => packet.SendPacket("single", (int)CHANNELS.GAME_STATE, player);
+
+        public static void SpawnActor(string actor)
+        {
+            switch (actor)
+            {
+                case "fish_spawn":
+                    Spawner.SpawnFish();
+                    break;
+                case "fish_spawn_alien":
+                    Spawner.SpawnFish("fish_spawn_alien");
+                    break;
+                case "raincloud":
+                    Spawner.SpawnRainCloud();
+                    break;
+                case "metalspot":
+                    Spawner.SpawnMetalSpot();
+                    break;
+                case "void_portal":
+                    Spawner.SpawnFish();
+                    break;
+            }        
+        }
+
+        public static void KickPlayer(Player player)
+            => Punish.KickPlayer(player);
+        public static void BanPlayer(Player player)
+            => Punish.BanPlayer(player);
     }
 }

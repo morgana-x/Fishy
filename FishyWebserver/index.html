@@ -51,12 +51,13 @@
                             </div>
                         </div>
                     </div>
-                    <!--<div class="btn-group" role="group" aria-label="Basic outlined example">
-                        <button type="button" class="btn btn-outline-primary opacity-75">Spawn Meteor</button>
-                        <button type="button" class="btn btn-outline-primary opacity-75">Spawn Raincloud</button>
-                        <button type="button" class="btn btn-outline-primary opacity-75">Spawn MetalSpot</button>
-                        <button type="button" class="btn btn-outline-primary opacity-75">Spawn Fish/Ripple</button>
-                    </div>-->
+                    <div class="btn-group" role="group" aria-label="Basic outlined example">
+                        <button id="fish_spawn_alien" type="button" class="btn btn-outline-primary opacity-75 spawn">Spawn Meteor</button>
+                        <button id="raincloud" type="button" class="btn btn-outline-primary opacity-75 spawn">Spawn Raincloud</button>
+                        <button id="metalspot" type="button" class="btn btn-outline-primary opacity-75 spawn">Spawn MetalSpot</button>
+                        <button id="fish_spawn" type="button" class="btn btn-outline-primary opacity-75 spawn">Spawn Fish/Ripple</button>
+                        <button id="void_portal" type="button" class="btn btn-outline-primary opacity-75 spawn">Spawn Void Portal</button>
+                    </div>
                 </div>
                 <div class="col-4">
                     <div class="card mb-4">
@@ -72,19 +73,41 @@
     </main>
     <script>
         const eventSource = new EventSource('/status');
+
         const chat = document.getElementById('chat');
         const playerList = document.getElementById('playerlist');
         const message = document.getElementById('message');
         const sendButton = document.getElementById('send_message');
 
+
+        // Add a eventlistener for the different stats that are being sent
+        const stats = ['players', 'banned', 'actors']
+        stats.forEach(stat => {
+            eventSource.addEventListener(stat, event => {
+                update(stat, event.data);
+            });
+        });
+
+        // Update the stats at the top
+        function update(name, data) {
+            let element = document.getElementById(name);
+            element.innerHTML = `${data}`;
+        }
+
+        eventSource.onerror = function () {
+            console.error('Connection to the server lost.');
+        };
+
+        // Add the eventlistener for sending messages
         sendButton.addEventListener('click', (e) => sendMessage(message.value));
         message.addEventListener('keypress', (e) => {
             if (e.key === "Enter") sendMessage(message.value);
         });
 
+        // Send a message to all players
         function sendMessage(msg) {
             message.value = "";
-            fetch("chat", {
+            fetch("action/chat/", {
                 method: "POST",
                 body: msg,
                 headers: {
@@ -93,20 +116,8 @@
             });
         }
 
-        function update(name, data) {
-            let element = document.getElementById(name);
-            element.innerHTML = `${data}`;
-        }
-
-        const stats = ['players', 'banned', 'actors']
-        stats.forEach(stat => {
-            eventSource.addEventListener(stat, event => {
-                update(stat, event.data);
-            });
-        });
-
+        // Append messages to list
         eventSource.addEventListener('message', event => {
-
             let chatElement = document.createElement('li');
             chatElement.className = "list-group-item";
             chatElement.innerHTML = event.data;
@@ -114,22 +125,77 @@
             chat.scrollTop = chat.scrollHeight;
         });
 
+
+        // Add the eventlistener for spawning actors
+        Array.from(document.getElementsByClassName('spawn')).forEach(function (element) {
+            element.addEventListener('click', (e) => spawnActor(element.id));
+        });
+
+        // Spawn the actor of the given type
+        function spawnActor(actor) {
+            fetch('action/spawn/', {
+                method: "POST",
+                body: actor,
+                headers: {
+                    "Content-type": "text/plain; charset=UTF-8"
+                }
+            });
+        }
+    
+        // Add the player to the list when they join
         eventSource.addEventListener('join', event => {
-            let playerElement = document.createElement('li');
-            playerElement.className = "list-group-item";
-            playerElement.id = event.data;
-            playerElement.innerHTML = event.data;
+            let eventPlayer = JSON.parse(event.data);
+            let playerElement = createPlayerItem(eventPlayer);
             playerList.appendChild(playerElement)
         });
 
+        // Create a list item with the player name and kick/ban buttons
+        function createPlayerItem(data) {
+            let listElement = document.createElement('li');
+            listElement.className = 'list-group-item d-flex align-items-center';
+            listElement.id = data.SteamID.AccountId;
+
+            // Player Name
+            let playerName = document.createElement('span');
+            playerName.className = 'me-auto';
+            playerName.innerHTML = data.Name;
+            listElement.appendChild(playerName);
+
+            // Kick Button
+            let kickButton = document.createElement('button');
+            kickButton.className = 'btn btn-sm btn-primary';
+            kickButton.innerHTML = 'Kick';
+            kickButton.addEventListener('click', (e) => punishPlayer('kick', data.SteamID.AccountId))
+            listElement.appendChild(kickButton);
+
+            // Ban Button
+            let banButton = document.createElement('button');
+            banButton.className = 'btn btn-sm btn-danger ms-1';
+            banButton.innerHTML = 'Ban';
+            banButton.addEventListener('click', (e) => punishPlayer('ban', data.SteamID.AccountId))
+            listElement.appendChild(banButton);
+
+            return listElement;
+        }
+
+        // Kick / Ban the player
+        function punishPlayer(type, player) {
+            fetch('action/'+ type +'/', {
+                method: "POST",
+                body: player,
+                headers: {
+                    "Content-type": "text/plain; charset=UTF-8"
+                }
+            });
+        }
+
+        // Remove the player from the list when they leave
         eventSource.addEventListener('leave', event => {
-            let playerElement = document.getElementById(event.data);
+            let eventPlayer = JSON.parse(event.data);
+            let playerElement = document.getElementById(eventPlayer.SteamID.AccountId);
             playerList.removeChild(playerElement)
         });
 
-        eventSource.onerror = function () {
-            console.error('Connection to the server lost.');
-        };
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
