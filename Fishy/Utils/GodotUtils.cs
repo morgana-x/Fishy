@@ -208,14 +208,13 @@ namespace Fishy.Utils
         private void WriteAsString(string s)
         {
             _binaryWriter.Write((int)GodotTypes.String);
-            _binaryWriter.Write(s.Length);
-
             byte[] bytes = Encoding.UTF8.GetBytes(s);
 
+            _binaryWriter.Write(bytes.Length);
             _binaryWriter.Write(bytes);
 
             int padding = (4 - bytes.Length % 4) % 4; // Calculate padding
-
+           
             for (int i = 0; i < padding; i++)
                 _binaryWriter.Write((byte)0);
 
