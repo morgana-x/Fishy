@@ -58,6 +58,7 @@ namespace Fishy.Utils
                 (int)GodotTypes.Int => ReadInt((flags & 1) == 1),
                 (int)GodotTypes.Float => ReadFloat((flags & 1) == 1),
                 (int)GodotTypes.String => ReadString(),
+                (int)GodotTypes.Vector2 => ReadVector2(),
                 (int)GodotTypes.Vector3 => ReadVector3(),
                 (int)GodotTypes.Dictionary => ReadDictionary(),
                 (int)GodotTypes.Array => ReadArray(),
@@ -70,6 +71,9 @@ namespace Fishy.Utils
 
         private double ReadFloat(bool is64)
             => is64 ? _binaryReader.ReadDouble() : _binaryReader.ReadSingle();
+
+        private Vector2 ReadVector2()
+            => new(_binaryReader.ReadSingle(), _binaryReader.ReadSingle());
 
         private Vector3 ReadVector3()
             => new(_binaryReader.ReadSingle(), _binaryReader.ReadSingle(), _binaryReader.ReadSingle());
@@ -157,6 +161,8 @@ namespace Fishy.Utils
                     WriteAsDouble(d); break;
                 case string s:
                     WriteAsString(s); break;
+                case Vector2 v2:
+                    WriteAsVector2(v2); break;
                 case Vector3 v:
                     WriteAsVector3(v); break;
                 case Dictionary<int, object> dictionaryArray:
@@ -213,6 +219,13 @@ namespace Fishy.Utils
             for (int i = 0; i < padding; i++)
                 _binaryWriter.Write((byte)0);
 
+        }
+
+        private void WriteAsVector2(Vector2 v2)
+        {
+            _binaryWriter.Write((int)GodotTypes.Vector2);
+            _binaryWriter.Write(v2.X);
+            _binaryWriter.Write(v2.Y);
         }
 
         private void WriteAsVector3(Vector3 v)
