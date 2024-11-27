@@ -15,9 +15,9 @@ namespace Fishy.Webserver
         public override void OnChatMessage(ChatMessage message)
             => dashboard.MessageToSync.Add(message);
         public override void OnPlayerJoin(Player player)
-            => dashboard.PlayersToSync.Add(player, "join");
+            => dashboard.PlayersToSync.TryAdd(player, "join");
         public override void OnPlayerLeave(Player player)
-            => dashboard.PlayersToSync.Add(player, "leave");
+            => dashboard.PlayersToSync.TryAdd(player, "leave");
         public override void OnInit()
             => dashboard.Initalize();
     }

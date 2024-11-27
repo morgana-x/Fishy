@@ -54,20 +54,18 @@ namespace Fishy.Webserver
 
                 if (MessageToSync.Count > 0)
                 {
-                    foreach (ChatMessage s in MessageToSync.ToList())
-                    {
+                    foreach (ChatMessage s in MessageToSync)
                         await connection.DataAsync(s.ToString(), "message");
-                        MessageToSync.Remove(s);
-                    }
+                    
+                    MessageToSync.Clear();
                 }
 
                 if (PlayersToSync.Count > 0)
                 {
-                    foreach (KeyValuePair<Player, string> p in PlayersToSync.ToDictionary())
-                    {
+                    foreach (KeyValuePair<Player, string> p in PlayersToSync)
                         await connection.DataAsync(JsonSerializer.Serialize(p.Key), p.Value);
-                        PlayersToSync.Remove(p.Key);
-                    }
+
+                    PlayersToSync.Clear();
                 }
 
                 await Task.Delay(100);

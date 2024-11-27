@@ -1,5 +1,5 @@
 ﻿# Example config file
-server_name = "Dedicated Server [Vanilla][Fishy]"
+server_name = "ncrypted.dev 24/7 Dedicated Server [Vanilla][Fishy]"
 # Message that the player gets when joining the server
 join_message = "This is a Fishy dedicated server - https://github.com/ncrypted-dev/Fishy. Type !rules or !help for further information."
 # Define the rules that should be displayed with !rules
@@ -9,12 +9,12 @@ max_players = 12
 # If set to true only players who know the lobby_code can join
 code_only = true
 # Should be a random six letter string
-lobby_code = "DEDI12"
-age_restricted = false
+lobby_code = "NCRYPT"
+age_restricted = true
 # Name of the world file in your Worlds folder
 world = "main_zone.tscn"
 # SteamID of the admins
-admins = [""]
+admins = ["76561198321064030", "76561198121963757"]
 # Folder where player reports should be saved
 report_folder = "Reports"
 # This is the message the players gets after reporting someone
@@ -25,4 +25,4 @@ report_response = "Hello, your report has been received and will be looked at as
 # Username for the webinterface
 username = "admin"
 # Password - SHA512 hash (default=admin)
-password = "c7ad44cbad762a5da0a452f9e854fdc1e0e7a52a38015f23f3eab1d80b931dd472634dfac71cd34ebc35d16ab7fb8a90c81f975113d6c7538dc69dd8de9077ec"
+password = "f58340e9b94f905cf56e932ea6093e10c0a6803aa14c3f30421af4c51cd7d878b907286cb2a42a86b3caa2ac732b8dec9204af3362f38b38d1fed0ffa9335aa4"
