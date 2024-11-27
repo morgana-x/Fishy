@@ -1,4 +1,4 @@
-﻿﻿# Example config file
+﻿# Example config file
 server_name = "Dedicated Server [Vanilla][Fishy]"
 # Message that the player gets when joining the server
 join_message = "This is a Fishy dedicated server - https://github.com/ncrypted-dev/Fishy. Type !rules or !help for further information."
