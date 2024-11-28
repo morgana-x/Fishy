@@ -227,8 +227,12 @@ namespace Fishy.Utils
 
             foreach(Dictionary<Vector2, int> Canvas in Fishy.CanvasData)
             {
-                if (Canvas == null) continue;
-
+                if (Canvas == null)
+                {
+                    i++;
+                    continue;
+                }
+                
                 new ChalkPacket(i, Canvas).SendPacket("single", (int)CHANNELS.CHALK, id);
 
                 i++;
