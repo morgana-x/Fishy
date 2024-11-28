@@ -6,21 +6,37 @@ namespace Fishy.Helper
     {
         public static byte[] Decompress(byte[] data)
         {
-            using MemoryStream inputStream = new(data);
-            using GZipStream gzipStream = new(inputStream, CompressionMode.Decompress);
-            using MemoryStream outputStream = new();
-            gzipStream.CopyTo(outputStream);
-            return outputStream.ToArray();
+            try
+            {
+                using MemoryStream inputStream = new(data);
+                using GZipStream gzipStream = new(inputStream, CompressionMode.Decompress);
+                using MemoryStream outputStream = new();
+                gzipStream.CopyTo(outputStream);
+                return outputStream.ToArray();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error while decompressing GZIP: " + e.Message);
+                return [];
+            }
         }
 
         public static byte[] Compress(byte[] data)
         {
-            using MemoryStream outputStream = new();
-            using (GZipStream gzipStream = new(outputStream, CompressionMode.Compress))
+            try
             {
-                gzipStream.Write(data, 0, data.Length);
+                using MemoryStream outputStream = new();
+                using (GZipStream gzipStream = new(outputStream, CompressionMode.Compress))
+                {
+                    gzipStream.Write(data, 0, data.Length);
+                }
+                return outputStream.ToArray();
             }
-            return outputStream.ToArray();
+            catch (Exception e)
+            {
+                Console.WriteLine("Error while compressing GZIP: " + e.Message);
+                return [];
+            }
         }
     }
 }
