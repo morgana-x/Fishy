@@ -112,6 +112,10 @@ namespace Fishy.Utils
         {
             new ActorSpawnPacket(actor.Type, actor.Position, actor.InstanceID).SendPacket("all", (int)CHANNELS.GAME_STATE);
             Fishy.Actors.Add(actor);
+            if (actor.Rotation == default)
+                return;
+            new ActorUpdatePacket(actor.InstanceID, actor.Position, actor.Rotation).SendPacket("all", (int)CHANNELS.GAME_STATE);
+
         }
         public static void SpawnActor(int ID, string Type, Vector3 position, Vector3 entRot = default)
         {
