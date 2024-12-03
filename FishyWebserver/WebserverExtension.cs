@@ -6,7 +6,7 @@ namespace Fishy.Webserver
 {
     class WebserverExtension : FishyExtension
     {
-        readonly Dashboard dashboard = new();
+        readonly static Dashboard dashboard = new();
 
         public static string GetUsername()
             => GetConfigValue("webserver")["username"].ToString() ?? "";

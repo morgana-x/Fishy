@@ -38,50 +38,6 @@ namespace Fishy.Models.Packets
             {
                 SteamNetworking.SendP2PPacket(steamId, data, nChannel: channel);
             }
-        }
-
-        /* TESTING
-         private static Godot.Collections.Dictionary<Variant, Variant> ToGodotCollection(Dictionary<string, object> data)
-        {
-            Godot.Collections.Dictionary<Variant, Variant> dic = new() { ""};
-
-            foreach (KeyValuePair<string, object> var in data)
-            {
-                if (var.Value.GetType() == typeof(Dictionary<string, object>))
-                {
-                    Godot.Collections.Dictionary<Variant, Variant> temp = ToGodotCollection((Dictionary<string, object>)var.Value);
-                    dic.Add(
-                        Variant.CreateFrom(var.Key),
-                        Variant.CreateFrom(temp));
-                    continue;
-                }
-
-
-                dic.Add(
-                    Variant.CreateFrom(var.Key),
-                    Variant.CreateFrom(ConvertToGodot(var.Value)));
-            }
-
-            return dic;
-        }
-
-
-        private static dynamic ConvertToGodot(dynamic var)
-        {
-            switch (var)
-            {
-                case bool:
-                case string:
-                case int:
-                case long:
-                case double:
-                case byte:
-                case Godot.Vector3:
-                    return Variant.CreateFrom(var);
-            }
-            return var;
-
-        }        
-         */
+        }   
     }
 }
