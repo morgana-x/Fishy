@@ -7,12 +7,15 @@ namespace Fishy.Chat.Commands
 {
     internal class KickCommand : Command
     {
-        public string Name = "kick";
-        public string Description = "Kick a player";
-        public ushort PermissionLevel = 1;
+        public override string Name() =>"kick";
+        public override string Description() =>"Kick a player";
+        public override ushort PermissionLevel() => 1;
+        public override string[] Aliases() => new string[0];
+
+        public override string Help() => "!kick player";
         public override void OnUse(SteamId executor, string[] arguments)
         {
-            if (arguments.Length == 0) return;
+            if (arguments.Length == 0) { ChatUtils.SendChat(executor, Help()); return; }
 
             Player? playerToKick = CommandHandler.FindPlayer(arguments[0]);
 
@@ -26,12 +29,15 @@ namespace Fishy.Chat.Commands
     }
     internal class BanCommand : Command
     {
-        public string Name = "ban";
-        public string Description = "Ban a player";
-        public ushort PermissionLevel = 1;
+        public override string Name() => "ban";
+        public override string Description() =>"Ban a player";
+        public override ushort PermissionLevel() => 1;
+        public override string[] Aliases() => new string[0];
+
+        public override string Help() => "!ban player";
         public override void OnUse(SteamId executor, string[] arguments)
         {
-            if (arguments.Length == 0) return;
+            if (arguments.Length == 0) { ChatUtils.SendChat(executor, Help()); return; }
 
             Player? playerToBan = CommandHandler.FindPlayer(arguments[0]);
 
@@ -45,36 +51,42 @@ namespace Fishy.Chat.Commands
     }
     public class SpawnCommand : Command
     {
-        public string Name = "spawn";
-        public string Description = "spawn an entity";
-        public ushort PermissionLevel = 1;
+        public override string Name() => "spawn";
+        public override string Description() =>"spawn an entity";
+        public override ushort PermissionLevel() => 1;
+
+        public override string[] Aliases() => new string[0];
+
+        public override string Help() => "!spawn type\nAvaiable default types: fish, meteor, raincloud, metalspot, voidportal";
         public override void OnUse(SteamId executor, string[] arguments)
         {
-            if (arguments.Length == 0) return;
+            if (arguments.Length == 0) { ChatUtils.SendChat(executor, Help()); return; }
             var from = executor;
+
             switch (arguments[0])
             { 
-            case "fish":
-                Spawner.SpawnFish();
-                new MessagePacket("A fish has been spawned!").SendPacket("single", (int)CHANNELS.GAME_STATE, from);
+                case "fish":
+                    Spawner.SpawnFish();
+                    ChatUtils.SendChat(executor, "A fish has been spawned!");
                     return;
-            case "meteor":
-                Spawner.SpawnFish("fish_spawn_alien");
-                new MessagePacket("A meteor has been spawned").SendPacket("single", (int)CHANNELS.GAME_STATE, from);
+                case "meteor":
+                    Spawner.SpawnFish("fish_spawn_alien");
+                    ChatUtils.SendChat(executor, "A meteor has been spawned!");
                     return;
-            case "rain":
-                Spawner.SpawnRainCloud();
-                new MessagePacket("A raincloud has been spawned!").SendPacket("single", (int)CHANNELS.GAME_STATE, from);
+                case "rain":
+                    Spawner.SpawnRainCloud();
+                    ChatUtils.SendChat(executor, "A raincloud has been spawned!");
                     return;
-            case "metal":
-                Spawner.SpawnMetalSpot();
-                new MessagePacket("A metalspot has been spawned!").SendPacket("single", (int)CHANNELS.GAME_STATE, from);
+                case "metal":
+                    Spawner.SpawnMetalSpot();
+                    ChatUtils.SendChat(executor, "A metalspot has been spawned!");
                     return;
-            case "void_portal":
-                Spawner.SpawnVoidPortal();
-                new MessagePacket("A voidportal has been spawned!").SendPacket("single", (int)CHANNELS.GAME_STATE, from);
-                return;
+                case "void_portal":
+                    Spawner.SpawnVoidPortal();
+                    ChatUtils.SendChat(executor, "A voidportal has been spawned!");
+                    return;
             }
+
             var player = CommandHandler.FindPlayer(executor);
             if (player == null)
                 return;
@@ -83,12 +95,15 @@ namespace Fishy.Chat.Commands
     }
     public class CodeOnlyCommand : Command
     {
-        public string Name = "codeonly";
-        public string Description = "sets lobby type";
-        public ushort PermissionLevel = 1;
+        public override string Name() => "codeonly";
+        public override string Description() =>"sets lobby type";
+        public override ushort PermissionLevel() => 1;
+        public override string[] Aliases() => new string[0];
+
+        public override string Help() => "!codeonly true/false";
         public override void OnUse(SteamId executor, string[] arguments)
         {
-            if (arguments.Length == 0) return;
+            if (arguments.Length == 0) { ChatUtils.SendChat(executor, Help()); return; }
             var from = executor;
             string type = arguments[0] == "true" ? "code_only" : "public";
             Fishy.SteamHandler.Lobby.SetData("type", type);
@@ -98,11 +113,17 @@ namespace Fishy.Chat.Commands
 
     internal class ReportCommand : Command
     {
-        public string Name = "report";
-        public string Description = "Report a player";
+        public override string Name() => "report";
+        public override string Description() => "Report a player";
+
+        public override ushort PermissionLevel() => 0;
+
+        public override string[] Aliases() => new string[0];
+
+        public override string Help() => "!report player reason";
         public override void OnUse(SteamId executor, string[] arguments)
         {
-            if (arguments.Length < 2) return;
+            if (arguments.Length < 2) { ChatUtils.SendChat(executor, Help()); return; }
             var from = executor;
             string reportPath = Path.Combine(AppContext.BaseDirectory, Fishy.Config.ReportFolder, DateTime.Now.ToString("ddMMyyyyHHmmss") + arguments[0] + ".txt");
             string report = "Report for user: " + arguments[0];
@@ -123,11 +144,15 @@ namespace Fishy.Chat.Commands
     }
     internal class IssueCommand : Command
     {
-        public string Name = "issue";
-        public string Description = "Report an issue";
-        public override void OnUse(SteamId executor, string[] arguments)
+        public override string Name() => "issue";
+        public override string Description() =>"Report an issue";
+        public override ushort PermissionLevel() => 0;
+
+        public override string Help() => "!issue description";
+        public override string[] Aliases() => new string[0];
+        public void OnUse(SteamId executor, string[] arguments)
         {
-            if (arguments.Length < 2) return;
+            if (arguments.Length < 1)  { ChatUtils.SendChat(executor, Help()); return; };
             var from = executor;
             string issuePath = Path.Combine(AppContext.BaseDirectory, Fishy.Config.ReportFolder, DateTime.Now.ToString("ddMMyyyyHHmmss") + "issueReport.txt");
             string issueReport = "Issue Report\n" + String.Join(" ", arguments[1..]);

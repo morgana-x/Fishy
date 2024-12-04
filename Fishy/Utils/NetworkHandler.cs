@@ -192,11 +192,10 @@ namespace Fishy.Utils
         static void OnChat(string message, SteamId id)
         {
             ChatLogger.Log(new ChatMessage(id, message));
+            if (CommandHandler.OnMessage(id, message)) return; // Suppress message if command ran
             Player player = Fishy.Players.First(player => player.SteamID.Equals(id)) ?? new Player(0, "");
             foreach (FishyExtension e in Fishy.Extensions)
                 e.OnChatMessage(new ChatMessage(player.SteamID, message));
-            if (player.Name == "") return;
-            CommandHandler.OnMessage(id, message);
         }
 
 

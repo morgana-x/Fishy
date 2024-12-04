@@ -1,4 +1,5 @@
-﻿using Fishy.Extensions;
+﻿using Fishy.Chat;
+using Fishy.Extensions;
 using Fishy.Models;
 using Fishy.Models.Packets;
 using Fishy.Utils;
@@ -28,21 +29,34 @@ namespace Fishy
 
             Console.WriteLine("Fishy - Your Dedicated Webfishing Server");
             Console.WriteLine("Starting Server");
+
             Console.WriteLine("Reading config file...");
             LoadConfig();
+
             Console.WriteLine("Reading world file...");
             LoadWorld();
+
             Console.WriteLine("Initializing Steam Client...");
             InitSteam();
+
             Console.WriteLine("Reading Banned players...");
             LoadBannedPlayers();
             Console.WriteLine("Reading Admin players...");
             LoadAdminPlayers();
+
             Console.WriteLine("Starting NetworkHandler...");
             NetworkHandler.Start();
             Console.WriteLine("NetworkHandler was started successfully");
+
             Console.WriteLine("Creating Lobby...");
             SteamHandler.CreateLobby();
+
+            Console.WriteLine("Registering commands...");
+            CommandHandler.Init();
+
+            Console.WriteLine("Listening for input task starting...");
+            Task.Run(ListenForInput);
+
             Console.WriteLine("Loading Extensions...");
             Extensions = ExtensionLoader.GetExtensions();
             foreach(FishyExtension extension in Extensions)
@@ -51,13 +65,13 @@ namespace Fishy
                 extension.OnInit();
             }
             Console.WriteLine($"{Extensions.Count} Extensions were loaded");
-            ListenForInput();
         }
 
         static void ListenForInput()
         {
             while (true) { 
                 string? message = Console.ReadLine();
+                if (CommandHandler.OnMessage(Steamworks.SteamClient.SteamId, message)) continue; // Suppress message if command ran
                 if (!String.IsNullOrEmpty(message))
                     new MessagePacket("Server: " + message).SendPacket("all", (int)CHANNELS.GAME_STATE);
             }
