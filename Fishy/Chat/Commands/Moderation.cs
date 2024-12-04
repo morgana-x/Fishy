@@ -151,7 +151,7 @@ namespace Fishy.Chat.Commands
 
         public override string Help() => "!issue description";
         public override string[] Aliases() => new string[0];
-        public void OnUse(SteamId executor, string[] arguments)
+        public override void OnUse(SteamId executor, string[] arguments)
         {
             if (arguments.Length == 0)  { ChatUtils.SendChat(executor, Help()); return; };
 
