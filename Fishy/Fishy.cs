@@ -48,11 +48,10 @@ namespace Fishy
             foreach(FishyExtension extension in Extensions)
             {
                 Console.WriteLine($"Loading Extension: {extension.GetType()}");
-                Task.Run(extension.OnInit);
+                extension.OnInit();
             }
             Console.WriteLine($"{Extensions.Count} Extensions were loaded");
-            Task.Run(() => ListenForInput());
-            while (true) {}
+            ListenForInput();
         }
 
         static void ListenForInput()

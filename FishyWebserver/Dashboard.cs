@@ -32,7 +32,7 @@ namespace Fishy.Webserver
             Host.Create()
                 .Defaults()
                 .Handler(app)
-                .RunAsync();
+                .StartAsync();
         }
 
 
