@@ -16,10 +16,12 @@ namespace Fishy
         internal static SteamHandler SteamHandler = new();
         internal static NetworkHandler NetworkHandler = new();
         internal static List<string> BannedUsers = [];
+        internal static List<string> AdminUsers = [];
         public static List<Dictionary<Vector2, int>> CanvasData = [];
         internal static List<FishyExtension> Extensions = [];
         static readonly string configPath = Path.Combine(AppContext.BaseDirectory, "config.toml");
         static readonly string bansPath = Path.Combine(AppContext.BaseDirectory, "bans.txt");
+        static readonly string adminsPath = Path.Combine(AppContext.BaseDirectory, "admins.txt");
 
         public static void Init()
         {
@@ -34,6 +36,8 @@ namespace Fishy
             InitSteam();
             Console.WriteLine("Reading Banned players...");
             LoadBannedPlayers();
+            Console.WriteLine("Reading Admin players...");
+            LoadAdminPlayers();
             Console.WriteLine("Starting NetworkHandler...");
             NetworkHandler.Start();
             Console.WriteLine("NetworkHandler was started successfully");
@@ -106,6 +110,18 @@ namespace Fishy
             SteamHandler.SetSteamBanList(BannedUsers);
 
             Console.WriteLine("Bans were read successfully");
+        }
+
+        static void LoadAdminPlayers()
+        {
+            if (!File.Exists(adminsPath))
+                File.Create(adminsPath);
+
+            using StreamReader adminReader = new(adminsPath);
+            while (!adminReader.EndOfStream)
+                AdminUsers.Add(adminReader.ReadLine() ?? "");
+
+            Console.WriteLine("Admins were read successfully");
         }
 
         static void InitSteam()
