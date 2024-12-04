@@ -1,4 +1,5 @@
-﻿using Fishy.Models.Packets;
+﻿using Fishy.Models;
+using Fishy.Models.Packets;
 using Steamworks;
 namespace Fishy.Utils
 {
@@ -15,7 +16,39 @@ namespace Fishy.Utils
         }
         public static void BroadcastChat(string message, string color="ffffff")
         {
+            Console.WriteLine(message);
             new MessagePacket(message, color).SendPacket("all", (int)CHANNELS.GAME_STATE);
+        }
+
+        public static Player FindPlayer(string name)
+        {
+            foreach (var player in Fishy.Players)
+            {
+                if (player.Name == name)
+                    return player;
+                if (player.SteamID.ToString() == name)
+                    return player;
+            }
+            foreach (var player in Fishy.Players)
+            {
+                if (player.Name.ToLower() == name.ToLower())
+                    return player;
+            }
+            foreach (var player in Fishy.Players)
+            {
+                if (player.Name.ToLower().StartsWith(name))
+                    return player;
+            }
+            return null;
+        }
+        public static Player FindPlayer(SteamId id)
+        {
+            foreach (var player in Fishy.Players)
+            {
+                if (player.SteamID == id)
+                    return player;
+            }
+            return null;
         }
     }
 }

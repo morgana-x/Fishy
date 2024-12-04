@@ -1,14 +1,5 @@
-﻿using Fishy.Models;
-using Fishy.Models.Packets;
-using Fishy.Utils;
+﻿using Fishy.Utils;
 using Steamworks;
-using Steamworks.Ugc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Fishy.Chat.Commands
 {
     internal class HelpCommand : Command

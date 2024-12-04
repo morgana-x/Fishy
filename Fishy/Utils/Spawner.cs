@@ -22,8 +22,7 @@ namespace Fishy.Utils
                     || (instance.Type == "raincloud" && instanceAge > 550)
                     || (instance.Type == "void_portal" && instanceAge > 600))
                 {
-                    new ActorRemovePacket(instance.InstanceID).SendPacket("all", (int)CHANNELS.GAME_STATE);
-                    Fishy.Actors.Remove(instance);
+                    RemoveActor(instance);
                 }
             }
 
@@ -77,8 +76,7 @@ namespace Fishy.Utils
         {
             int id = _random.Next();
             Vector3 pos = Fishy.World.FishSpawns[_random.Next(Fishy.World.FishSpawns.Count)];
-            new ActorSpawnPacket(type, pos, id).SendPacket("all", (int)CHANNELS.GAME_STATE);
-            Fishy.Actors.Add(new Actor(id, type, pos));
+            SpawnActor(new Actor(id, type, pos));
             if (type != "fish_spawn")
                 new ActorRemovePacket(id) { Action = "_ready" }.SendPacket("all", (int)CHANNELS.GAME_STATE);
         }
@@ -114,15 +112,40 @@ namespace Fishy.Utils
         public static void SpawnActor(Actor actor)
         {
             new ActorSpawnPacket(actor.Type, actor.Position, actor.InstanceID).SendPacket("all", (int)CHANNELS.GAME_STATE);
-            Fishy.Actors.Add(actor);
+            if (!Fishy.Actors.Contains(actor))
+                Fishy.Actors.Add(actor);
             if (actor.Rotation == default)
                 return;
             new ActorUpdatePacket(actor.InstanceID, actor.Position, actor.Rotation).SendPacket("all", (int)CHANNELS.GAME_STATE);
 
         }
-        public static void SpawnActor(int ID, string Type, Vector3 position, Vector3 entRot = default)
+        private static void SpawnActor(int ID, string Type, Vector3 position, Vector3 entRot = default)
         {
-            SpawnActor( new Actor(ID, Type, position, entRot));
+            SpawnActor(new Actor(ID, Type, position, entRot));
+        }
+        public static void SpawnActor(string Type, Vector3 position, Vector3 entRot = default)
+        {
+            SpawnActor(new Actor(GetFreeId(), Type, position, entRot));
+        }
+        public static void RemoveActor(Actor actor)
+        {
+            new ActorRemovePacket(actor.InstanceID).SendPacket("all", (int)CHANNELS.GAME_STATE);
+            if (Fishy.Actors.Contains(actor))
+                Fishy.Actors.Remove(actor);
+        }
+        public static void RemoveActor(int ID)
+        {
+            new ActorRemovePacket(ID).SendPacket("all", (int)CHANNELS.GAME_STATE);
+            for (int i=0; i<Fishy.Actors.Count; i++)
+            {
+                if (Fishy.Actors.Count >= i)
+                    return;
+                var actor = Fishy.Actors[i];
+                if (actor.InstanceID != ID)
+                    continue;
+                Fishy.Actors.Remove(actor);
+                return;
+            }
         }
     }
-}
+ }

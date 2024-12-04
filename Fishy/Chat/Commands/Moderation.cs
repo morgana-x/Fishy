@@ -1,5 +1,4 @@
 ﻿using Fishy.Models;
-using Fishy.Models.Packets;
 using Fishy.Utils;
 using Steamworks;
 
@@ -17,7 +16,7 @@ namespace Fishy.Chat.Commands
         {
             if (arguments.Length == 0) { ChatUtils.SendChat(executor, Help()); return; }
 
-            Player? playerToKick = CommandHandler.FindPlayer(arguments[0]);
+            Player? playerToKick = ChatUtils.FindPlayer(arguments[0]);
 
             if (playerToKick == null)
                 return;
@@ -39,7 +38,7 @@ namespace Fishy.Chat.Commands
         {
             if (arguments.Length == 0) { ChatUtils.SendChat(executor, Help()); return; }
 
-            Player? playerToBan = CommandHandler.FindPlayer(arguments[0]);
+            Player? playerToBan = ChatUtils.FindPlayer(arguments[0]);
 
             if (playerToBan == null)
                 return;
@@ -87,10 +86,11 @@ namespace Fishy.Chat.Commands
                     return;
             }
 
-            var player = CommandHandler.FindPlayer(executor);
+            var player = ChatUtils.FindPlayer(executor);
             if (player == null)
                 return;
             Spawner.SpawnActor(new Actor(Spawner.GetFreeId(), arguments[0], player.Position));
+            ChatUtils.SendChat(executor, $"Spawned \"{arguments[0]}\".");
         }
     }
     public class CodeOnlyCommand : Command
@@ -107,7 +107,7 @@ namespace Fishy.Chat.Commands
             var from = executor;
             string type = arguments[0] == "true" ? "code_only" : "public";
             Fishy.SteamHandler.Lobby.SetData("type", type);
-            new MessagePacket("The lobby type has been set to: " + type).SendPacket("single", (int)CHANNELS.GAME_STATE, from);
+            ChatUtils.SendChat(executor, "The lobby type has been set to: " + type);
         }
     }
 
@@ -124,9 +124,10 @@ namespace Fishy.Chat.Commands
         public override void OnUse(SteamId executor, string[] arguments)
         {
             if (arguments.Length < 2) { ChatUtils.SendChat(executor, Help()); return; }
-            var from = executor;
+
             string reportPath = Path.Combine(AppContext.BaseDirectory, Fishy.Config.ReportFolder, DateTime.Now.ToString("ddMMyyyyHHmmss") + arguments[0] + ".txt");
             string report = "Report for user: " + arguments[0];
+
             report += "\nReason: " + String.Join(" ", arguments[1..]);
             report += "\nChat Log:\n\n";
 
@@ -139,7 +140,7 @@ namespace Fishy.Chat.Commands
                 chatLog = ChatLogger.GetLog();
 
             File.WriteAllText(reportPath, report + ChatLogger.GetLog());
-            new MessagePacket(Fishy.Config.ReportResponse, "b30000").SendPacket("single", (int)CHANNELS.GAME_STATE, from);
+            ChatUtils.SendChat(executor, Fishy.Config.ReportResponse, "b30000");
         }
     }
     internal class IssueCommand : Command
@@ -152,13 +153,15 @@ namespace Fishy.Chat.Commands
         public override string[] Aliases() => new string[0];
         public void OnUse(SteamId executor, string[] arguments)
         {
-            if (arguments.Length < 1)  { ChatUtils.SendChat(executor, Help()); return; };
-            var from = executor;
+            if (arguments.Length == 0)  { ChatUtils.SendChat(executor, Help()); return; };
+
             string issuePath = Path.Combine(AppContext.BaseDirectory, Fishy.Config.ReportFolder, DateTime.Now.ToString("ddMMyyyyHHmmss") + "issueReport.txt");
-            string issueReport = "Issue Report\n" + String.Join(" ", arguments[1..]);
+
+            string issueReport = "Issue Report\n" + String.Join(" ", arguments[0..]);
+
             File.WriteAllText(issuePath, issueReport);
-            new MessagePacket("Your issues has been received and will be looked at as soon as possible.", "b30000").SendPacket("single", (int)CHANNELS.GAME_STATE, from);
-            
+
+            ChatUtils.SendChat(executor, "Your issues has been received and will be looked at as soon as possible.", "b30000");
         }
     }
 
