@@ -3,10 +3,15 @@ using System.Numerics;
 
 namespace Fishy.Models
 {
-    public class Actor
+	public enum ActorType
+	{
+		NONE, PLAYER, FISH_SPAWN, FISH_SPAWN_ALIEN, RAINCLOUD, METAL_SPAWN, VOID_PORTAL,
+	}
+
+	public class Actor
     {
         public int InstanceID { get; set; }
-        public string Type { get; set; }
+        public ActorType Type { get; set; }
         public DateTimeOffset SpawnTime { get; set; } = DateTimeOffset.UtcNow;
 
         public Vector3 Position { get; set; }
@@ -15,10 +20,10 @@ namespace Fishy.Models
         public int DespawnTime { get; set; }  = -1;
         public bool Despawn { get; set; }  = true;
 
-        public Actor(int ID, string Type, Vector3 position, Vector3 entRot = default)
+        public Actor(int ID, ActorType type, Vector3 position, Vector3 entRot = default)
         {
             InstanceID = ID;
-            this.Type = Type;
+            Type = type;
             Position = position;
             if (entRot != default)
                 Rotation = entRot;
@@ -36,7 +41,7 @@ namespace Fishy.Models
         public float wanderDirection;
         public bool Static = false;
 
-        public RainCloud(int ID, Vector3 entPos) : base(ID, "raincloud", Vector3.Zero)
+        public RainCloud(int ID, Vector3 entPos) : base(ID, ActorType.RAINCLOUD, Vector3.Zero)
         {
             Position = entPos;
 

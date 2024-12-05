@@ -40,7 +40,7 @@ namespace Fishy.Extensions
                     Spawner.SpawnFish();
                     break;
                 case "fish_spawn_alien":
-                    Spawner.SpawnFish("fish_spawn_alien");
+                    Spawner.SpawnFish(ActorType.FISH_SPAWN_ALIEN);
                     break;
                 case "raincloud":
                     Spawner.SpawnRainCloud();

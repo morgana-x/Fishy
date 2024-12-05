@@ -66,7 +66,7 @@ namespace Fishy.Chat.Commands
                     ChatUtils.SendChat(executor, "A fish has been spawned!");
                     return;
                 case "meteor":
-                    Spawner.SpawnFish("fish_spawn_alien");
+                    Spawner.SpawnFish(ActorType.FISH_SPAWN_ALIEN);
                     ChatUtils.SendChat(executor, "A meteor has been spawned!");
                     return;
                 case "raincloud":

@@ -8,9 +8,16 @@ namespace Fishy.Models.Packets
         public override string Type { get; set; } = "instance_actor";
         public Params Params { get; set; } = new Params();
 
-        public ActorSpawnPacket(string type, Vector3 pos, int id)
+        public ActorSpawnPacket(ActorType type, Vector3 pos, int id)
         {
-            this.Params = new Params() {  Actor_Type = type, At = pos, Actor_ID = id};
+            this.Params = new Params() {
+                // TODO: Would probably be better to map the enum to
+                // webfishing's canonical actor type strings instead of using
+                // ToString(), but for now this works fine
+                Actor_Type = type.ToString().ToLower(),
+                At = pos,
+                Actor_ID = id
+            };
         }
 
         public override Dictionary<string, object> ToDictionary()
