@@ -20,7 +20,7 @@ namespace Fishy.Chat.Commands
             new ServerClosePacket().SendPacket("all", (int)CHANNELS.GAME_STATE);
 
             Fishy.SteamHandler.Lobby.Leave();
-            SteamClient.Shutdown();
+            Environment.Exit(0);
         }
     }
 
