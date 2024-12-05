@@ -163,15 +163,15 @@ namespace Fishy.Chat.Commands
     }
     internal class SetAdmin : Command
     {
-        public override string Name() => "setadmin";
-        public override string Description() => "set a player to admin temporally (CONSOLE ONLY)";
-        public override ushort PermissionLevel() => 100;
+        public override string Name => "setadmin";
+        public override string Description => "set a player to admin temporally (CONSOLE ONLY)";
+        public override PermissionLevel PermissionLevel => PermissionLevel.Server;
+        public override string Help => "!setadmin name/steamid";
+        public override string[] Aliases => [];
 
-        public override string Help() => "!setadmin name/steamid";
-        public override string[] Aliases() => new string[0];
         public override void OnUse(SteamId executor, string[] arguments)
         {
-            if (arguments.Length == 0) { ChatUtils.SendChat(executor, Help()); return; };
+            if (arguments.Length == 0) { ChatUtils.SendChat(executor, Help); return; };
             Player? player = ChatUtils.FindPlayer(arguments[0]);
             if (player == null)
             {
@@ -180,26 +180,26 @@ namespace Fishy.Chat.Commands
             }
             if (Fishy.Config.Admins.Contains(player.SteamID.ToString()))
             {
-                ChatUtils.SendChat(executor, $"{player.Name} ({player.SteamID.ToString()}) is already an admin!", "ffaaaa");
+                ChatUtils.SendChat(executor, $"{player.Name} ({player.SteamID}) is already an admin!", "ffaaaa");
                 return;
             }
             Fishy.Config.Admins.Add(player.SteamID.ToString());
             // Todo save config, might require some config rework too :(
-            ChatUtils.SendChat(executor, $"Set {player.Name} ({player.SteamID.ToString()}) to admin!", "aaffaa");
-            ChatUtils.BroadcastChat($"{player.Name} ({player.SteamID.ToString()}) was promoted to admin!", "aaffaa");
+            ChatUtils.SendChat(executor, $"Set {player.Name} ({player.SteamID}) to admin!", "aaffaa");
+            ChatUtils.BroadcastChat($"{player.Name} ({player.SteamID}) was promoted to admin!", "aaffaa");
         }
     }
     internal class RevokeAdmin : Command
     {
-        public override string Name() => "revokeadmin";
-        public override string Description() => "revoke a player's admin access (CONSOLE ONLY)";
-        public override ushort PermissionLevel() => 100;
+        public override string Name => "revokeadmin";
+        public override string Description => "revoke a player's admin access (CONSOLE ONLY)";
+        public override PermissionLevel PermissionLevel => PermissionLevel.Server;
+        public override string Help => "!revokeadmin steamid";
+        public override string[] Aliases => [];
 
-        public override string Help() => "!revokeadmin steamid";
-        public override string[] Aliases() => new string[0];
         public override void OnUse(SteamId executor, string[] arguments)
         {
-            if (arguments.Length == 0) { ChatUtils.SendChat(executor, Help()); return; };
+            if (arguments.Length == 0) { ChatUtils.SendChat(executor, Help); return; };
             Player? player = ChatUtils.FindPlayer(arguments[0]);
             if (player == null)
             {
@@ -213,8 +213,8 @@ namespace Fishy.Chat.Commands
             }
             Fishy.Config.Admins.Remove(player.SteamID.ToString());
             // Todo save config, might require some config rework too :(
-            ChatUtils.SendChat(executor, $"Revoked {player.Name} ({player.SteamID.ToString()})'s admin!", "aaffaa");
-            ChatUtils.BroadcastChat($"{player.Name} ({player.SteamID.ToString()}) was demoted from admin!", "ffaaaa");
+            ChatUtils.SendChat(executor, $"Revoked {player.Name} ({player.SteamID})'s admin!", "aaffaa");
+            ChatUtils.BroadcastChat($"{player.Name} ({player.SteamID}) was demoted from admin!", "ffaaaa");
         }
 
       
