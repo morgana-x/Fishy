@@ -11,8 +11,8 @@ namespace Fishy.Utils
         static readonly ActorType[] _baseTypes = [ActorType.FISH_SPAWN, ActorType.NONE];
         static readonly Random _random = new();
 
-        // Ported from world.gd
-        public static void Spawn()
+        // Vanilla spawn routine, ported from world.gd
+        public static void SpawnIngameEvent()
         {
             foreach (Actor instance in Fishy.Actors.ToList())
             {
