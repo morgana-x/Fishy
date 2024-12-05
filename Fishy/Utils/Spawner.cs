@@ -100,7 +100,7 @@ namespace Fishy.Utils
         public static void SpawnVoidPortal()
         {
             Vector3 pos = Fishy.World.HiddenSpots[_random.Next(Fishy.World.HiddenSpots.Count)];
-            SpawnActor(new Actor(GetFreeId(), ActorType.METAL_SPAWN, pos));
+            SpawnActor(new Actor(GetFreeId(), ActorType.VOID_PORTAL, pos));
         }
         public static int GetFreeId()
             => _random.Next();
