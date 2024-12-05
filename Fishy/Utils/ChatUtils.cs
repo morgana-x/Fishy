@@ -3,7 +3,7 @@ using Fishy.Models.Packets;
 using Steamworks;
 namespace Fishy.Utils
 {
-    internal class ChatUtils
+    public class ChatUtils
     {
         public static void SendChat(SteamId steamId, string message, string color="ffffff")
         {
