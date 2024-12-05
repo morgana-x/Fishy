@@ -113,14 +113,14 @@ namespace Fishy.Utils
             if (actor.Rotation == default)
                 return;
             new ActorUpdatePacket(actor.InstanceID, actor.Position, actor.Rotation).SendPacket("all", (int)CHANNELS.GAME_STATE);
+
         }
-
-        private static void SpawnActor(int ID, string Type, Vector3 position, Vector3 entRot = default)
-            => SpawnActor(new Actor(ID, Type, position, entRot));
-
-        public static void SpawnActor(string Type, Vector3 position, Vector3 entRot = default)
-            => SpawnActor(new Actor(GetFreeId(), Type, position, entRot));
-
+        public static Actor SpawnActor(string Type, Vector3 position, Vector3 entRot = default)
+        {
+            var actor = new Actor(GetFreeId(), Type, position, entRot);
+            SpawnActor(actor);
+            return actor;
+        }
         public static void RemoveActor(Actor actor)
         {
             new ActorRemovePacket(actor.InstanceID).SendPacket("all", (int)CHANNELS.GAME_STATE);
@@ -132,7 +132,7 @@ namespace Fishy.Utils
             new ActorRemovePacket(ID).SendPacket("all", (int)CHANNELS.GAME_STATE);
             for (int i=0; i<Fishy.Actors.Count; i++)
             {
-                if (Fishy.Actors.Count >= i)
+                if (i >= Fishy.Actors.Count)
                     return;
                 var actor = Fishy.Actors[i];
                 if (actor.InstanceID != ID)
