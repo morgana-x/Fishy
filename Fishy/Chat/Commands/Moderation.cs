@@ -1,9 +1,29 @@
 ﻿using Fishy.Models;
+using Fishy.Models.Packets;
 using Fishy.Utils;
 using Steamworks;
 
 namespace Fishy.Chat.Commands
 {
+    internal class StopCommand : Command
+    {
+        public override string Name => "stop";
+        public override string Description => "Shuts down the server";
+        public override PermissionLevel PermissionLevel => PermissionLevel.Admin;
+        public override string[] Aliases => ["halt"];
+        public override string Help => "!stop";
+
+        public override void OnUse(SteamId executor, string[] arguments)
+        {
+            Console.WriteLine("Server was halted by " + executor);
+
+            new ServerClosePacket().SendPacket("all", (int)CHANNELS.GAME_STATE);
+
+            Fishy.SteamHandler.Lobby.Leave();
+            SteamClient.Shutdown();
+        }
+    }
+
     internal class KickCommand : Command
     {
         public override string Name =>"kick";
