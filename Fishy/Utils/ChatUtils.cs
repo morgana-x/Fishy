@@ -7,7 +7,7 @@ namespace Fishy.Utils
     {
         public static void SendChat(SteamId steamId, string message, string color="ffffff")
         {
-            if (steamId == Steamworks.SteamClient.SteamId)
+            if (steamId == SteamClient.SteamId)
             {
                 Console.WriteLine(message);
                 return;
@@ -20,35 +20,32 @@ namespace Fishy.Utils
             new MessagePacket(message, color).SendPacket("all", (int)CHANNELS.GAME_STATE);
         }
 
-        public static Player FindPlayer(string name)
+        public static Player? FindPlayer(string name)
         {
-            foreach (var player in Fishy.Players)
-            {
-                if (player.Name == name)
-                    return player;
-                if (player.SteamID.ToString() == name)
-                    return player;
-            }
-            foreach (var player in Fishy.Players)
-            {
-                if (player.Name.ToLower() == name.ToLower())
-                    return player;
-            }
-            foreach (var player in Fishy.Players)
-            {
-                if (player.Name.ToLower().StartsWith(name))
-                    return player;
-            }
+            Player? player;
+
+            // Get Player with exact name match
+            player = Fishy.Players.FirstOrDefault(p => p.Name == name) ?? null;
+
+            if (player != null)
+                return player;
+
+            // Try to get Player with SteamID
+            player = Fishy.Players.FirstOrDefault(p => p.SteamID.ToString() == name) ?? null;
+
+            if (player != null)
+                return player;
+
+            // Case insensitive search
+            player = Fishy.Players.FirstOrDefault(p => p.Name.ToLower() == name.ToLower()) ?? null;
+
+            if (player != null)
+                return player;
+
             return null;
         }
-        public static Player FindPlayer(SteamId id)
-        {
-            foreach (var player in Fishy.Players)
-            {
-                if (player.SteamID == id)
-                    return player;
-            }
-            return null;
-        }
+        public static Player? FindPlayer(SteamId id)
+            => Fishy.Players.FirstOrDefault(p => p.SteamID == id) ?? null;
+        
     }
 }

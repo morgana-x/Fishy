@@ -3,14 +3,20 @@ using Steamworks;
 
 namespace Fishy.Chat
 {
+    public enum PermissionLevel
+    {
+        Player = 0,
+        Admin = 1,
+        Server = 100,
+    }
+
     class CommandHandler
     {
-        public static Dictionary<string, Command> Commands = new Dictionary<string, Command>();
+        public static Dictionary<string, Command> Commands = [];
 
         public static void AddCommand(Command cmd)
-        {
-            Commands.Add(cmd.Name(), cmd);
-        }
+            => Commands.Add(cmd.Name, cmd);
+
         public static void Init()
         {
             AddCommand(new Commands.HelpCommand());
@@ -23,31 +29,31 @@ namespace Fishy.Chat
             AddCommand(new Commands.KickCommand());
         }
        
-        public static ushort GetPermissionLevel(SteamId player) // Temporary, ideally will have ranks
+        public static int GetPermissionLevel(SteamId player) // Temporary, ideally will have ranks
         {
-            if (player == Steamworks.SteamClient.SteamId) // If player is server
-                return 100;
-            return Fishy.AdminUsers.Contains(player.ToString()) ? (ushort)1 : (ushort)0;
+            if (player == SteamClient.SteamId) // If player is server
+                return (int)PermissionLevel.Server;
+
+            return Fishy.Config.Admins.Contains(player.ToString()) ? (int)PermissionLevel.Admin : (int)PermissionLevel.Player;
         }
 
         public static bool OnMessage(SteamId from, string message)
         {
-            if (!message.StartsWith("!"))
+            if (!message.StartsWith('!'))
                 return false;
+
             string commandName = message.Remove(0, 1).Split(" ")[0];
             string[] arguments = message.Split(" ").Skip(1).ToArray();
 
-            if (!Commands.ContainsKey(commandName))
+            if (!Commands.TryGetValue(commandName, out Command? cmd))
             {
                 ChatUtils.SendChat(from, $"Command \"{commandName}\" does not exist!", "bb1111");
                 return true;
             }
 
-            Command cmd = Commands[commandName];
-
-            if (cmd.PermissionLevel() > GetPermissionLevel(from))
+            if ((int)cmd.PermissionLevel > GetPermissionLevel(from))
             {
-                ChatUtils.SendChat(from, $"You are not a high enough rank to use \"{commandName}\"!", "bb1111");
+                ChatUtils.SendChat(from, $"You don't have permission to use \"{commandName}\"!", "bb1111");
                 return true;
             }
 
@@ -59,24 +65,21 @@ namespace Fishy.Chat
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error occured while running command \"{commandName}\" {ex.ToString()}");
+                Console.WriteLine($"Error occured while running command \"{commandName}\" {ex}");
             }
             return true;
-
         }
     }
+
     public abstract class Command
     {
-        public abstract string Name();
-        public abstract string[] Aliases();
-        public abstract ushort PermissionLevel();
-        public abstract string Description();
+        public virtual string Name { get; set; } = "";
+        public virtual string[] Aliases { get; set; } = [];
+        public virtual PermissionLevel PermissionLevel { get; set; } = PermissionLevel.Player;
+        public virtual string Description { get; set; } = "";
+        public virtual string Help { get; set; } = "";
 
-        public abstract string Help();
-        public virtual void OnUse(SteamId player, string[] arguments)
-        {
-
-        }
+        public virtual void OnUse(SteamId player, string[] arguments) { }
     }
 
 }

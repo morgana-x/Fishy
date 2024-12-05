@@ -83,32 +83,28 @@ namespace Fishy.Utils
 
         public static void SpawnRainCloud()
         {
-            int id = _random.Next();
             Vector3 pos = new(_random.Next(-100, 150), 42f, _random.Next(-150, 100));
-            SpawnActor(new RainCloud(id, pos));
+            SpawnActor(new RainCloud(GetFreeId(), pos));
         }
 
         public static void SpawnMetalSpot()
         {
-            int id = _random.Next();
             Vector3 pos = Fishy.World.TrashPoints[_random.Next(Fishy.World.TrashPoints.Count)];
 
             if (_random.NextSingle() < .15f)
                 pos = Fishy.World.ShorelinePoints[_random.Next(Fishy.World.ShorelinePoints.Count)];
 
-            SpawnActor(new Actor(id, "metal_spawn", pos));
+            SpawnActor(new Actor(GetFreeId(), "metal_spawn", pos));
         }
 
         public static void SpawnVoidPortal()
         {
-            int id = _random.Next();
             Vector3 pos = Fishy.World.HiddenSpots[_random.Next(Fishy.World.HiddenSpots.Count)];
-            SpawnActor(new Actor(id, "void_portal", pos));
+            SpawnActor(new Actor(GetFreeId(), "void_portal", pos));
         }
         public static int GetFreeId()
-        {
-            return _random.Next();
-        }
+            => _random.Next();
+        
         public static void SpawnActor(Actor actor)
         {
             new ActorSpawnPacket(actor.Type, actor.Position, actor.InstanceID).SendPacket("all", (int)CHANNELS.GAME_STATE);
@@ -117,22 +113,20 @@ namespace Fishy.Utils
             if (actor.Rotation == default)
                 return;
             new ActorUpdatePacket(actor.InstanceID, actor.Position, actor.Rotation).SendPacket("all", (int)CHANNELS.GAME_STATE);
+        }
 
-        }
         private static void SpawnActor(int ID, string Type, Vector3 position, Vector3 entRot = default)
-        {
-            SpawnActor(new Actor(ID, Type, position, entRot));
-        }
+            => SpawnActor(new Actor(ID, Type, position, entRot));
+
         public static void SpawnActor(string Type, Vector3 position, Vector3 entRot = default)
-        {
-            SpawnActor(new Actor(GetFreeId(), Type, position, entRot));
-        }
+            => SpawnActor(new Actor(GetFreeId(), Type, position, entRot));
+
         public static void RemoveActor(Actor actor)
         {
             new ActorRemovePacket(actor.InstanceID).SendPacket("all", (int)CHANNELS.GAME_STATE);
-            if (Fishy.Actors.Contains(actor))
-                Fishy.Actors.Remove(actor);
+            Fishy.Actors.Remove(actor);
         }
+
         public static void RemoveActor(int ID)
         {
             new ActorRemovePacket(ID).SendPacket("all", (int)CHANNELS.GAME_STATE);

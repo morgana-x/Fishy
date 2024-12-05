@@ -6,15 +6,15 @@ namespace Fishy.Chat.Commands
 {
     internal class KickCommand : Command
     {
-        public override string Name() =>"kick";
-        public override string Description() =>"Kick a player";
-        public override ushort PermissionLevel() => 1;
-        public override string[] Aliases() => new string[0];
+        public override string Name =>"kick";
+        public override string Description =>"Kick a player";
+        public override PermissionLevel PermissionLevel => PermissionLevel.Admin;
+        public override string[] Aliases => [];
+        public override string Help => "!kick player";
 
-        public override string Help() => "!kick player";
         public override void OnUse(SteamId executor, string[] arguments)
         {
-            if (arguments.Length == 0) { ChatUtils.SendChat(executor, Help()); return; }
+            if (arguments.Length == 0) { ChatUtils.SendChat(executor, Help); return; }
 
             Player? playerToKick = ChatUtils.FindPlayer(arguments[0]);
 
@@ -28,15 +28,15 @@ namespace Fishy.Chat.Commands
     }
     internal class BanCommand : Command
     {
-        public override string Name() => "ban";
-        public override string Description() =>"Ban a player";
-        public override ushort PermissionLevel() => 1;
-        public override string[] Aliases() => new string[0];
+        public override string Name => "ban";
+        public override string Description =>"Ban a player";
+        public override PermissionLevel PermissionLevel => PermissionLevel.Admin;
+        public override string[] Aliases => [];
+        public override string Help => "!ban player";
 
-        public override string Help() => "!ban player";
         public override void OnUse(SteamId executor, string[] arguments)
         {
-            if (arguments.Length == 0) { ChatUtils.SendChat(executor, Help()); return; }
+            if (arguments.Length == 0) { ChatUtils.SendChat(executor, Help); return; }
 
             Player? playerToBan = ChatUtils.FindPlayer(arguments[0]);
 
@@ -44,23 +44,20 @@ namespace Fishy.Chat.Commands
                 return;
 
             Punish.BanPlayer(playerToBan);
-
             ChatUtils.SendChat(executor, $"Banned player {playerToBan.Name} {playerToBan.SteamID}");
         }
     }
     public class SpawnCommand : Command
     {
-        public override string Name() => "spawn";
-        public override string Description() =>"spawn an entity";
-        public override ushort PermissionLevel() => 1;
+        public override string Name => "spawn";
+        public override string Description =>"spawn an entity";
+        public override PermissionLevel PermissionLevel => PermissionLevel.Admin;
+        public override string[] Aliases => [];
+        public override string Help => "!spawn type\nAvaiable default types: fish, meteor, raincloud, metalspot, void_portal";
 
-        public override string[] Aliases() => new string[0];
-
-        public override string Help() => "!spawn type\nAvaiable default types: fish, meteor, raincloud, metalspot, voidportal";
         public override void OnUse(SteamId executor, string[] arguments)
         {
-            if (arguments.Length == 0) { ChatUtils.SendChat(executor, Help()); return; }
-            var from = executor;
+            if (arguments.Length == 0) { ChatUtils.SendChat(executor, Help); return; }
 
             switch (arguments[0])
             { 
@@ -72,11 +69,11 @@ namespace Fishy.Chat.Commands
                     Spawner.SpawnFish("fish_spawn_alien");
                     ChatUtils.SendChat(executor, "A meteor has been spawned!");
                     return;
-                case "rain":
+                case "raincloud":
                     Spawner.SpawnRainCloud();
                     ChatUtils.SendChat(executor, "A raincloud has been spawned!");
                     return;
-                case "metal":
+                case "metalspot":
                     Spawner.SpawnMetalSpot();
                     ChatUtils.SendChat(executor, "A metalspot has been spawned!");
                     return;
@@ -86,44 +83,46 @@ namespace Fishy.Chat.Commands
                     return;
             }
 
-            var player = ChatUtils.FindPlayer(executor);
+            Player? player = ChatUtils.FindPlayer(executor);
+
             if (player == null)
                 return;
-            Spawner.SpawnActor(new Actor(Spawner.GetFreeId(), arguments[0], player.Position));
+
+            //Spawner.SpawnActor(new Actor(Spawner.GetFreeId(), arguments[0], player.Position));
             ChatUtils.SendChat(executor, $"Spawned \"{arguments[0]}\".");
         }
     }
     public class CodeOnlyCommand : Command
     {
-        public override string Name() => "codeonly";
-        public override string Description() =>"sets lobby type";
-        public override ushort PermissionLevel() => 1;
-        public override string[] Aliases() => new string[0];
+        public override string Name => "codeonly";
+        public override string Description =>"sets lobby type";
+        public override PermissionLevel PermissionLevel => PermissionLevel.Admin;
+        public override string[] Aliases => [];
+        public override string Help => "!codeonly true/false";
 
-        public override string Help() => "!codeonly true/false";
         public override void OnUse(SteamId executor, string[] arguments)
         {
-            if (arguments.Length == 0) { ChatUtils.SendChat(executor, Help()); return; }
-            var from = executor;
+            if (arguments.Length == 0) { ChatUtils.SendChat(executor, Help); return; }
+
             string type = arguments[0] == "true" ? "code_only" : "public";
+
             Fishy.SteamHandler.Lobby.SetData("type", type);
+
             ChatUtils.SendChat(executor, "The lobby type has been set to: " + type);
         }
     }
 
     internal class ReportCommand : Command
     {
-        public override string Name() => "report";
-        public override string Description() => "Report a player";
+        public override string Name => "report";
+        public override string Description => "Report a player";
+        public override PermissionLevel PermissionLevel => PermissionLevel.Player;
+        public override string[] Aliases => [];
+        public override string Help => "!report player reason";
 
-        public override ushort PermissionLevel() => 0;
-
-        public override string[] Aliases() => new string[0];
-
-        public override string Help() => "!report player reason";
         public override void OnUse(SteamId executor, string[] arguments)
         {
-            if (arguments.Length < 2) { ChatUtils.SendChat(executor, Help()); return; }
+            if (arguments.Length < 2) { ChatUtils.SendChat(executor, Help); return; }
 
             string reportPath = Path.Combine(AppContext.BaseDirectory, Fishy.Config.ReportFolder, DateTime.Now.ToString("ddMMyyyyHHmmss") + arguments[0] + ".txt");
             string report = "Report for user: " + arguments[0];
@@ -145,22 +144,20 @@ namespace Fishy.Chat.Commands
     }
     internal class IssueCommand : Command
     {
-        public override string Name() => "issue";
-        public override string Description() =>"Report an issue";
-        public override ushort PermissionLevel() => 0;
+        public override string Name => "issue";
+        public override string Description =>"Report an issue";
+        public override PermissionLevel PermissionLevel => PermissionLevel.Player;
+        public override string Help => "!issue description";
+        public override string[] Aliases => [];
 
-        public override string Help() => "!issue description";
-        public override string[] Aliases() => new string[0];
         public override void OnUse(SteamId executor, string[] arguments)
         {
-            if (arguments.Length == 0)  { ChatUtils.SendChat(executor, Help()); return; };
+            if (arguments.Length == 0)  { ChatUtils.SendChat(executor, Help); return; };
 
             string issuePath = Path.Combine(AppContext.BaseDirectory, Fishy.Config.ReportFolder, DateTime.Now.ToString("ddMMyyyyHHmmss") + "issueReport.txt");
-
             string issueReport = "Issue Report\n" + String.Join(" ", arguments[0..]);
 
             File.WriteAllText(issuePath, issueReport);
-
             ChatUtils.SendChat(executor, "Your issues has been received and will be looked at as soon as possible.", "b30000");
         }
     }

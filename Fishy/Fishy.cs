@@ -17,12 +17,10 @@ namespace Fishy
         internal static SteamHandler SteamHandler = new();
         internal static NetworkHandler NetworkHandler = new();
         internal static List<string> BannedUsers = [];
-        internal static List<string> AdminUsers = [];
         public static List<Dictionary<Vector2, int>> CanvasData = [];
         internal static List<FishyExtension> Extensions = [];
         static readonly string configPath = Path.Combine(AppContext.BaseDirectory, "config.toml");
         static readonly string bansPath = Path.Combine(AppContext.BaseDirectory, "bans.txt");
-        static readonly string adminsPath = Path.Combine(AppContext.BaseDirectory, "admins.txt");
 
         public static void Init()
         {
@@ -41,8 +39,6 @@ namespace Fishy
 
             Console.WriteLine("Reading Banned players...");
             LoadBannedPlayers();
-            Console.WriteLine("Reading Admin players...");
-            LoadAdminPlayers();
 
             Console.WriteLine("Starting NetworkHandler...");
             NetworkHandler.Start();
@@ -53,9 +49,7 @@ namespace Fishy
 
             Console.WriteLine("Registering commands...");
             CommandHandler.Init();
-
-            Console.WriteLine("Listening for input task starting...");
-            Task.Run(ListenForInput);
+            Console.WriteLine($"{CommandHandler.Commands.Count} Commands were loaded");
 
             Console.WriteLine("Loading Extensions...");
             Extensions = ExtensionLoader.GetExtensions();
@@ -65,21 +59,26 @@ namespace Fishy
                 extension.OnInit();
             }
             Console.WriteLine($"{Extensions.Count} Extensions were loaded");
+
+            Console.WriteLine("Listening for console input...");
+            ListenForInput();
         }
 
         static void ListenForInput()
         {
             while (true) { 
                 string? message = Console.ReadLine();
-                if (CommandHandler.OnMessage(Steamworks.SteamClient.SteamId, message)) continue; // Suppress message if command ran
                 if (!String.IsNullOrEmpty(message))
+                {
+                    if (CommandHandler.OnMessage(SteamClient.SteamId, message)) // Suppress message if command ran
+                        continue;
                     new MessagePacket("Server: " + message).SendPacket("all", (int)CHANNELS.GAME_STATE);
+                }
             }
         }
 
         static void LoadConfig()
         {
-
             if (!File.Exists(configPath))
             {
                 Console.WriteLine("No config file found. (config.toml) Shutting down...");
@@ -124,19 +123,7 @@ namespace Fishy
 
             Console.WriteLine("Bans were read successfully");
         }
-
-        static void LoadAdminPlayers()
-        {
-            if (!File.Exists(adminsPath))
-                File.Create(adminsPath);
-
-            using StreamReader adminReader = new(adminsPath);
-            while (!adminReader.EndOfStream)
-                AdminUsers.Add(adminReader.ReadLine() ?? "");
-
-            Console.WriteLine("Admins were read successfully");
-        }
-
+        
         static void InitSteam()
         {
             string error = SteamHandler.Init();
@@ -148,6 +135,5 @@ namespace Fishy
             }
             Console.WriteLine("Steam Client was initialized successfully");
         }
-
     }
 }
