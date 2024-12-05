@@ -1,4 +1,5 @@
-﻿using Fishy.Extensions;
+﻿using Fishy.Chat;
+using Fishy.Extensions;
 using Fishy.Models;
 using Fishy.Models.Packets;
 using Fishy.Utils;
@@ -26,19 +27,30 @@ namespace Fishy
 
             Console.WriteLine("Fishy - Your Dedicated Webfishing Server");
             Console.WriteLine("Starting Server");
+
             Console.WriteLine("Reading config file...");
             LoadConfig();
+
             Console.WriteLine("Reading world file...");
             LoadWorld();
+
             Console.WriteLine("Initializing Steam Client...");
             InitSteam();
+
             Console.WriteLine("Reading Banned players...");
             LoadBannedPlayers();
+
             Console.WriteLine("Starting NetworkHandler...");
             NetworkHandler.Start();
             Console.WriteLine("NetworkHandler was started successfully");
+
             Console.WriteLine("Creating Lobby...");
             SteamHandler.CreateLobby();
+
+            Console.WriteLine("Registering commands...");
+            CommandHandler.Init();
+            Console.WriteLine($"{CommandHandler.Commands.Count} Commands were loaded");
+
             Console.WriteLine("Loading Extensions...");
             Extensions = ExtensionLoader.GetExtensions();
             foreach(FishyExtension extension in Extensions)
@@ -47,6 +59,8 @@ namespace Fishy
                 extension.OnInit();
             }
             Console.WriteLine($"{Extensions.Count} Extensions were loaded");
+
+            Console.WriteLine("Listening for console input...");
             ListenForInput();
         }
 
@@ -55,13 +69,16 @@ namespace Fishy
             while (true) { 
                 string? message = Console.ReadLine();
                 if (!String.IsNullOrEmpty(message))
+                {
+                    if (CommandHandler.OnMessage(SteamClient.SteamId, message)) // Suppress message if command ran
+                        continue;
                     new MessagePacket("Server: " + message).SendPacket("all", (int)CHANNELS.GAME_STATE);
+                }
             }
         }
 
         static void LoadConfig()
         {
-
             if (!File.Exists(configPath))
             {
                 Console.WriteLine("No config file found. (config.toml) Shutting down...");
@@ -106,7 +123,7 @@ namespace Fishy
 
             Console.WriteLine("Bans were read successfully");
         }
-
+        
         static void InitSteam()
         {
             string error = SteamHandler.Init();
@@ -118,6 +135,5 @@ namespace Fishy
             }
             Console.WriteLine("Steam Client was initialized successfully");
         }
-
     }
 }
