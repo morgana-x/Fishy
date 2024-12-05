@@ -21,13 +21,15 @@ namespace Fishy.Chat
             AddCommand(new Commands.CodeOnlyCommand());
             AddCommand(new Commands.BanCommand());
             AddCommand(new Commands.KickCommand());
+            AddCommand(new Commands.SetAdmin());
+            AddCommand(new Commands.RevokeAdmin());
         }
        
         public static ushort GetPermissionLevel(SteamId player) // Temporary, ideally will have ranks
         {
             if (player == Steamworks.SteamClient.SteamId) // If player is server
                 return 100;
-            return Fishy.AdminUsers.Contains(player.ToString()) ? (ushort)1 : (ushort)0;
+            return Fishy.Config.Admins.Contains(player.ToString()) ? (ushort)1 : (ushort)0;
         }
 
         public static bool OnMessage(SteamId from, string message)
