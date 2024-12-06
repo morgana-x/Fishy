@@ -10,7 +10,7 @@ namespace Fishy.Chat
         Server = 100,
     }
 
-    class CommandHandler
+    public class CommandHandler
     {
         public static Dictionary<string, Command> Commands = [];
 
