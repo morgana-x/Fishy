@@ -79,37 +79,10 @@ namespace Fishy.Chat.Commands
         {
             if (arguments.Length == 0) { ChatUtils.SendChat(executor, Help); return; }
 
-            switch (arguments[0])
-            { 
-                case "fish":
-                    Spawner.SpawnFish();
-                    ChatUtils.SendChat(executor, "A fish has been spawned!");
-                    return;
-                case "meteor":
-                    Spawner.SpawnFish(ActorType.FISH_SPAWN_ALIEN);
-                    ChatUtils.SendChat(executor, "A meteor has been spawned!");
-                    return;
-                case "raincloud":
-                    Spawner.SpawnRainCloud();
-                    ChatUtils.SendChat(executor, "A raincloud has been spawned!");
-                    return;
-                case "metalspot":
-                    Spawner.SpawnMetalSpot();
-                    ChatUtils.SendChat(executor, "A metalspot has been spawned!");
-                    return;
-                case "void_portal":
-                    Spawner.SpawnVoidPortal();
-                    ChatUtils.SendChat(executor, "A voidportal has been spawned!");
-                    return;
-            }
+            string actorTypeName = arguments[0];
 
-            Player? player = ChatUtils.FindPlayer(executor);
-
-            if (player == null)
-                return;
-
-            //Spawner.SpawnActor(new Actor(Spawner.GetFreeId(), arguments[0], player.Position));
-            ChatUtils.SendChat(executor, $"Spawned \"{arguments[0]}\".");
+			Spawner.VanillaSpawn(Actor.ActorTypesByName[actorTypeName]);
+            ChatUtils.SendChat(executor, $"A {actorTypeName} has been spawned!");
         }
     }
     internal class CodeOnlyCommand : Command

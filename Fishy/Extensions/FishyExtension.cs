@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using Fishy.Models;
@@ -32,26 +33,31 @@ namespace Fishy.Extensions
         public static void SendPacketToPlayer(FPacket packet, SteamId player)
             => packet.SendPacket("single", (int)CHANNELS.GAME_STATE, player);
 
-        public static void SpawnActor(string actor)
+		/// <summary>
+        /// Spawns an actor using the vanilla spawning algorithm.
+		/// </summary>
+        /// <remarks>
+        /// Note that because the spawning algorithm is reimplemented by Fishy,
+        /// any actors not yet implemented in Fishy will not have a vanilla
+        /// spawning algorithm. These will need to be spawned with the
+        /// <c>SpawnActor(string, Vector3, Vector3)</c> overload.
+        /// </remarks>
+		public static void SpawnActor(ActorType type)
         {
-            switch (actor)
-            {
-                case "fish_spawn":
-                    Spawner.SpawnFish();
-                    break;
-                case "fish_spawn_alien":
-                    Spawner.SpawnFish(ActorType.FISH_SPAWN_ALIEN);
-                    break;
-                case "raincloud":
-                    Spawner.SpawnRainCloud();
-                    break;
-                case "metalspot":
-                    Spawner.SpawnMetalSpot();
-                    break;
-                case "void_portal":
-                    Spawner.SpawnFish();
-                    break;
-            }        
+            Spawner.VanillaSpawn(type);
+        }
+
+        /// <summary>
+        /// Spawns an actor by its name.
+        /// </summary>
+        /// <remarks>
+        /// Bypasses checking whether the actor type is valid, for use in cases
+        /// where an extension wants to spawn something that hasn't been added
+        /// to the ActorType enum.
+        /// </remarks>
+		public static void SpawnActor(string type, Vector3 position, Vector3 rotation = default)
+        {
+            Spawner.SpawnActor(new Actor(Spawner.GetFreeId(), type, position, rotation));
         }
 
         public static void KickPlayer(Player player)

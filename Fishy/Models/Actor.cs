@@ -5,13 +5,24 @@ namespace Fishy.Models
 {
 	public enum ActorType
 	{
-		NONE, PLAYER, FISH_SPAWN, FISH_SPAWN_ALIEN, RAINCLOUD, METAL_SPAWN, VOID_PORTAL,
+		NONE, PLAYER, FISH_SPAWN, FISH_SPAWN_ALIEN, RAINCLOUD, METAL_SPAWN, VOID_PORTAL, UNKNOWN
 	}
 
 	public class Actor
-    {
-        public int InstanceID { get; set; }
+	{
+        public static Dictionary<string, ActorType> ActorTypesByName = new Dictionary<string, ActorType>
+        {
+            { "none", ActorType.NONE },
+            { "player", ActorType.PLAYER },
+            { "fish_spawn", ActorType.FISH_SPAWN },
+            { "fish_spawn_alien", ActorType.FISH_SPAWN_ALIEN },
+            { "metal_spawn", ActorType.METAL_SPAWN },
+            { "void_portal", ActorType.VOID_PORTAL },
+		};
+
+		public int InstanceID { get; set; }
         public ActorType Type { get; set; }
+        public string TypeName { get; }
         public DateTimeOffset SpawnTime { get; set; } = DateTimeOffset.UtcNow;
 
         public Vector3 Position { get; set; }
@@ -24,14 +35,27 @@ namespace Fishy.Models
         {
             InstanceID = ID;
             Type = type;
+            TypeName = type.ToString().ToLower();
             Position = position;
             if (entRot != default)
                 Rotation = entRot;
             else
                 Rotation = Vector3.Zero;
         }
+        
+        public Actor(int ID, string type, Vector3 position, Vector3 entRot = default)
+		{
+			InstanceID = ID;
+			Type = ActorType.UNKNOWN;
+            TypeName = type.ToString().ToLower();
+			Position = position;
+			if (entRot != default)
+				Rotation = entRot;
+			else
+				Rotation = Vector3.Zero;
+		}
 
-        public virtual void OnUpdate() { }
+		public virtual void OnUpdate() { }
 
     }
 
