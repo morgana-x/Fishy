@@ -79,7 +79,7 @@ namespace Fishy.Chat.Commands
             get
             {
                 StringBuilder result = new StringBuilder();
-                result.AppendLine("!spawn type [force]\nAvaiable default types: ");
+                result.AppendLine("!spawn type [force]\nAvailable default types: ");
 
                 foreach (string typeName in Actor.ActorTypesByName.Keys)
                 {
@@ -99,15 +99,15 @@ namespace Fishy.Chat.Commands
 
             if (Actor.ActorTypesByName.ContainsKey(actorTypeName))
             {
-			    Spawner.VanillaSpawn(Actor.ActorTypesByName[actorTypeName]);
+                Spawner.VanillaSpawn(Actor.ActorTypesByName[actorTypeName]);
                 ChatUtils.SendChat(executor, $"A {actorTypeName} has been spawned!");
             }
             else if (arguments.Length > 1 && arguments[1] == "force")
-			{
-				Player? player = ChatUtils.FindPlayer(arguments[0]);
+            {
+                Player? player = ChatUtils.FindPlayer(arguments[0]);
                 Spawner.SpawnActor(new Actor(Spawner.GetFreeId(), actorTypeName, player.Position));
-				ChatUtils.SendChat(executor, $"A {actorTypeName} has been spawned!");
-			}
+                ChatUtils.SendChat(executor, $"A {actorTypeName} has been spawned!");
+            }
             else
             {
                 ChatUtils.SendChat(executor, $"No actor with the name {actorTypeName} is known. Add the 'force' argument to try anyway.");
