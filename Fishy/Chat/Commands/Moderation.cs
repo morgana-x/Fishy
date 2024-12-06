@@ -2,6 +2,7 @@
 using Fishy.Models.Packets;
 using Fishy.Utils;
 using Steamworks;
+using System.Text;
 
 namespace Fishy.Chat.Commands
 {
@@ -26,8 +27,8 @@ namespace Fishy.Chat.Commands
 
     internal class KickCommand : Command
     {
-        public override string Name =>"kick";
-        public override string Description =>"Kick a player";
+        public override string Name => "kick";
+        public override string Description => "Kick a player";
         public override PermissionLevel PermissionLevel => PermissionLevel.Admin;
         public override string[] Aliases => [];
         public override string Help => "!kick player";
@@ -49,7 +50,7 @@ namespace Fishy.Chat.Commands
     internal class BanCommand : Command
     {
         public override string Name => "ban";
-        public override string Description =>"Ban a player";
+        public override string Description => "Ban a player";
         public override PermissionLevel PermissionLevel => PermissionLevel.Admin;
         public override string[] Aliases => [];
         public override string Help => "!ban player";
@@ -70,10 +71,25 @@ namespace Fishy.Chat.Commands
     internal class SpawnCommand : Command
     {
         public override string Name => "spawn";
-        public override string Description =>"spawn an entity";
+        public override string Description => "spawn an entity";
         public override PermissionLevel PermissionLevel => PermissionLevel.Admin;
         public override string[] Aliases => [];
-        public override string Help => "!spawn type\nAvaiable default types: fish, meteor, raincloud, metalspot, void_portal";
+        public override string Help
+        {
+            get
+            {
+                StringBuilder result = new StringBuilder();
+                result.AppendLine("!spawn type\nAvaiable default types: ");
+
+                foreach (string typeName in Actor.ActorTypesByName.Keys)
+                {
+                    result.AppendLine(typeName);
+                }
+
+                return result.ToString();
+            }
+        }
+
 
         public override void OnUse(SteamId executor, string[] arguments)
         {
