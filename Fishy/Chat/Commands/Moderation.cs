@@ -71,7 +71,7 @@ namespace Fishy.Chat.Commands
     internal class SpawnCommand : Command
     {
         public override string Name => "spawn";
-        public override string Description => "spawn an entity";
+        public override string Description => "Spawn an entity";
         public override PermissionLevel PermissionLevel => PermissionLevel.Admin;
         public override string[] Aliases => [];
         public override string Help
@@ -79,7 +79,7 @@ namespace Fishy.Chat.Commands
             get
             {
                 StringBuilder result = new StringBuilder();
-                result.AppendLine("!spawn type\nAvaiable default types: ");
+                result.AppendLine("!spawn type [force]\nAvaiable default types: ");
 
                 foreach (string typeName in Actor.ActorTypesByName.Keys)
                 {
@@ -97,10 +97,24 @@ namespace Fishy.Chat.Commands
 
             string actorTypeName = arguments[0];
 
-			Spawner.VanillaSpawn(Actor.ActorTypesByName[actorTypeName]);
-            ChatUtils.SendChat(executor, $"A {actorTypeName} has been spawned!");
+            if (Actor.ActorTypesByName.ContainsKey(actorTypeName))
+            {
+			    Spawner.VanillaSpawn(Actor.ActorTypesByName[actorTypeName]);
+                ChatUtils.SendChat(executor, $"A {actorTypeName} has been spawned!");
+            }
+            else if (arguments.Length > 1 && arguments[1] == "force")
+			{
+				Player? player = ChatUtils.FindPlayer(arguments[0]);
+                Spawner.SpawnActor(new Actor(Spawner.GetFreeId(), actorTypeName, player.Position));
+				ChatUtils.SendChat(executor, $"A {actorTypeName} has been spawned!");
+			}
+            else
+            {
+                ChatUtils.SendChat(executor, $"No actor with the name {actorTypeName} is known. Add the 'force' argument to try anyway.");
+            }
         }
     }
+
     internal class CodeOnlyCommand : Command
     {
         public override string Name => "codeonly";
