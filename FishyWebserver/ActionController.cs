@@ -16,7 +16,10 @@ namespace Fishy.Webserver
     {
         [ControllerAction(RequestMethod.Post)]
         public void Spawn([FromBody] string actor_type)
-            => WebserverExtension.SpawnActor(actor_type);
+        {
+            if (Enum.TryParse<ActorType>(actor_type, true, out ActorType actorType))
+                WebserverExtension.SpawnActor(actorType);
+        }
 
         [ControllerAction(RequestMethod.Post)]
         public void Chat([FromBody] string message)

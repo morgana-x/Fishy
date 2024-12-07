@@ -2,6 +2,7 @@
 using Fishy.Models.Packets;
 using Fishy.Utils;
 using Steamworks;
+using System.Text;
 
 namespace Fishy.Chat.Commands
 {
@@ -26,8 +27,8 @@ namespace Fishy.Chat.Commands
 
     internal class KickCommand : Command
     {
-        public override string Name =>"kick";
-        public override string Description =>"Kick a player";
+        public override string Name => "kick";
+        public override string Description => "Kick a player";
         public override PermissionLevel PermissionLevel => PermissionLevel.Admin;
         public override string[] Aliases => [];
         public override string Help => "!kick player";
@@ -49,7 +50,7 @@ namespace Fishy.Chat.Commands
     internal class BanCommand : Command
     {
         public override string Name => "ban";
-        public override string Description =>"Ban a player";
+        public override string Description => "Ban a player";
         public override PermissionLevel PermissionLevel => PermissionLevel.Admin;
         public override string[] Aliases => [];
         public override string Help => "!ban player";
@@ -70,48 +71,50 @@ namespace Fishy.Chat.Commands
     internal class SpawnCommand : Command
     {
         public override string Name => "spawn";
-        public override string Description =>"spawn an entity";
+        public override string Description => "Spawn an entity";
         public override PermissionLevel PermissionLevel => PermissionLevel.Admin;
         public override string[] Aliases => [];
-        public override string Help => "!spawn type\nAvaiable default types: fish, meteor, raincloud, metalspot, void_portal";
+        public override string Help
+        {
+            get
+            {
+                StringBuilder result = new StringBuilder();
+                result.AppendLine("!spawn type [force]\nAvailable default types: ");
+
+                foreach (string typeName in Actor.ActorTypesByName.Keys)
+                {
+                    result.AppendLine(typeName);
+                }
+
+                return result.ToString();
+            }
+        }
+
 
         public override void OnUse(SteamId executor, string[] arguments)
         {
             if (arguments.Length == 0) { ChatUtils.SendChat(executor, Help); return; }
 
-            switch (arguments[0])
-            { 
-                case "fish":
-                    Spawner.SpawnFish();
-                    ChatUtils.SendChat(executor, "A fish has been spawned!");
-                    return;
-                case "meteor":
-                    Spawner.SpawnFish("fish_spawn_alien");
-                    ChatUtils.SendChat(executor, "A meteor has been spawned!");
-                    return;
-                case "raincloud":
-                    Spawner.SpawnRainCloud();
-                    ChatUtils.SendChat(executor, "A raincloud has been spawned!");
-                    return;
-                case "metalspot":
-                    Spawner.SpawnMetalSpot();
-                    ChatUtils.SendChat(executor, "A metalspot has been spawned!");
-                    return;
-                case "void_portal":
-                    Spawner.SpawnVoidPortal();
-                    ChatUtils.SendChat(executor, "A voidportal has been spawned!");
-                    return;
+            string actorTypeName = arguments[0];
+
+            if (Actor.ActorTypesByName.ContainsKey(actorTypeName))
+            {
+                Spawner.VanillaSpawn(Actor.ActorTypesByName[actorTypeName]);
+                ChatUtils.SendChat(executor, $"A {actorTypeName} has been spawned!");
             }
-
-            Player? player = ChatUtils.FindPlayer(executor);
-
-            if (player == null)
-                return;
-
-            //Spawner.SpawnActor(new Actor(Spawner.GetFreeId(), arguments[0], player.Position));
-            ChatUtils.SendChat(executor, $"Spawned \"{arguments[0]}\".");
+            else if (arguments.Length > 1 && arguments[1] == "force")
+            {
+                Player? player = ChatUtils.FindPlayer(arguments[0]);
+                Spawner.SpawnActor(new Actor(Spawner.GetFreeId(), actorTypeName, player.Position));
+                ChatUtils.SendChat(executor, $"A {actorTypeName} has been spawned!");
+            }
+            else
+            {
+                ChatUtils.SendChat(executor, $"No actor with the name {actorTypeName} is known. Add the 'force' argument to try anyway.");
+            }
         }
     }
+
     internal class CodeOnlyCommand : Command
     {
         public override string Name => "codeonly";

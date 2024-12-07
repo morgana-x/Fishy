@@ -43,7 +43,7 @@ namespace Fishy.Utils
             ScheduledTask pingTask = new(requestPlayerPings, 5000);
             pingTask.Start();
 
-            ScheduledTask spawnTask = new(Spawner.Spawn, 10000);
+            ScheduledTask spawnTask = new(Spawner.SpawnIngameEvent, 10000);
             spawnTask.Start();
 
             ScheduledTask updateTask = new(Update, 100);
