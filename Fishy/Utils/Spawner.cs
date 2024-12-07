@@ -103,13 +103,13 @@ namespace Fishy.Utils
             SpawnActor(new Actor(GetFreeId(), "void_portal", pos));
         }
 
-        private static int nextId = 100;
+        private static volatile int nextId = 100;
         public static int GetFreeId()
         {
-            nextId++;
+            Interlocked.Increment(ref nextId);
             if (nextId >= int.MaxValue - 1)
                 nextId = 100;
-            return _random.Next();
+            return nextId;
         }
         
         public static void SpawnActor(Actor actor)
