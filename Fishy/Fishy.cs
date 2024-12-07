@@ -1,4 +1,5 @@
 ﻿using Fishy.Chat;
+using Fishy.Events;
 using Fishy.Extensions;
 using Fishy.Models;
 using Fishy.Models.Packets;

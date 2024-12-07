@@ -102,8 +102,15 @@ namespace Fishy.Utils
             Vector3 pos = Fishy.World.HiddenSpots[_random.Next(Fishy.World.HiddenSpots.Count)];
             SpawnActor(new Actor(GetFreeId(), "void_portal", pos));
         }
+
+        private static int nextId = 100;
         public static int GetFreeId()
-            => _random.Next();
+        {
+            nextId++;
+            if (nextId >= int.MaxValue - 1)
+                nextId = 100;
+            return _random.Next();
+        }
         
         public static void SpawnActor(Actor actor)
         {

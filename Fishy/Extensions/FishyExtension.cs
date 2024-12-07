@@ -16,10 +16,6 @@ namespace Fishy.Extensions
         public static List<string> BannedPlayers { get => Fishy.BannedUsers; }
         public static List<Actor> Actors { get => Fishy.Actors; }
         public static List<ChatMessage> ChatLog { get => ChatLogger.ChatLogs; }
-
-        public virtual void OnChatMessage(ChatMessage message) { }
-        public virtual void OnPlayerJoin(Player player) { }
-        public virtual void OnPlayerLeave(Player player) { }
         public virtual void OnInit() { }
 
 

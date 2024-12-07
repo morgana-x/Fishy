@@ -1,4 +1,5 @@
-﻿using Fishy.Extensions;
+﻿using Fishy.Events;
+using Fishy.Extensions;
 using Fishy.Models;
 using Steamworks;
 using Steamworks.Data;
@@ -62,8 +63,7 @@ namespace Fishy.Utils
             UpdatePlayerCount();
             Player player = new(userJoining.Id, userJoining.Name);
 
-            foreach (FishyExtension e in Fishy.Extensions)
-                e.OnPlayerJoin(player);
+            EventManager.TriggerOnPlayerJoin(player);
 
             Console.WriteLine(DateTime.Now.ToString("dd.MM HH:mm:ss") + $" A Player Joined: {userJoining.Name}");
             Fishy.Players.Add(player);
@@ -75,8 +75,7 @@ namespace Fishy.Utils
             UpdatePlayerCount();
             Console.WriteLine(DateTime.Now.ToString("dd.MM HH:mm:ss") + $" A Player Left: {userLeaving.Name}");
 
-            foreach (FishyExtension e in Fishy.Extensions)
-                e.OnPlayerLeave(Fishy.Players.First(player => player.SteamID.Equals(userLeaving.Id)));
+            EventManager.TriggerOnPlayerLeave(Fishy.Players.First(player => player.SteamID.Equals(userLeaving.Id)));
 
             Fishy.Players.RemoveAll(player => player.SteamID.Equals(userLeaving.Id));
             Console.Title = $"Fishy Server - There are currently {Fishy.Players.Count} Players playing";
