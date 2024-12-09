@@ -113,7 +113,7 @@ namespace Fishy.Utils
         }
         public static Actor SpawnActor(ActorType type, Vector3 position, Vector3 entRot = default)
         {
-            return SpawnActor(type.ToString(), position, entRot);
+            return SpawnActor(type.ToString().ToLower(), position, entRot);
         }
         public static Actor SpawnActor(string type, Vector3 position, Vector3 entRot = default)
         {
