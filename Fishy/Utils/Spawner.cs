@@ -98,8 +98,15 @@ namespace Fishy.Utils
             }
         }
 
-        public static int GetFreeId() => _random.Next();
-        
+        public static int GetFreeId()
+        {
+            int id = _random.Next();
+            while (Fishy.Actors.Select(f => f.InstanceID).Contains(id))
+                id = _random.Next();
+
+            return id;
+        }
+
         public static void SpawnActor(Actor actor)
         {
             new ActorSpawnPacket(actor.Type, actor.Position, actor.InstanceID).SendPacket("all", (int)CHANNELS.GAME_STATE);
