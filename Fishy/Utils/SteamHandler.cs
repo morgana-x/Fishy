@@ -2,6 +2,7 @@
 using Fishy.Models;
 using Steamworks;
 using Steamworks.Data;
+using System.Xml.Linq;
 
 namespace Fishy.Utils
 {
@@ -59,6 +60,11 @@ namespace Fishy.Utils
 
         void SteamMatchmaking_OnLobbyMemberJoined(Lobby Lobby, Friend userJoining)
         {
+            // Try to stop spammers from spam joining, spammer get scammed!
+            var existingPlayer = Fishy.Players.FirstOrDefault(p => p.SteamID == userJoining.Id) ?? null;
+            if (existingPlayer != null)
+                return;
+
             UpdatePlayerCount();
             Player player = new(userJoining.Id, userJoining.Name);
 
