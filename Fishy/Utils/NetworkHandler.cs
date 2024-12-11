@@ -137,7 +137,7 @@ namespace Fishy.Utils
                                 RemoveServerActor(serverInst);
                             }
                         }
-                        EventManager.RaiseEvent(new Event.Events.ActorActionEventArgs(packet.SteamId, packetAction));
+                        EventManager.RaiseEvent(new Event.EventArgs.ActorActionEventArgs(packet.SteamId, packetAction, packetInfo));
                         break;
                     case "request_actors":
                         List<Actor> instances = Fishy.Actors;
@@ -197,7 +197,7 @@ namespace Fishy.Utils
 
             if (CommandHandler.OnMessage(id, message)) return; // Suppress message if command ran
 
-            EventManager.RaiseEvent(new Event.Events.ChatMessageEventArgs(id,message));
+            EventManager.RaiseEvent(new Event.EventArgs.ChatMessageEventArgs(id,message));
         }
 
 
