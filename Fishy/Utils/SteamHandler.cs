@@ -1,8 +1,6 @@
-﻿using Fishy.Extensions;
-using Fishy.Models;
+﻿using Fishy.Models;
 using Steamworks;
 using Steamworks.Data;
-using System.Xml.Linq;
 
 namespace Fishy.Utils
 {
