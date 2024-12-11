@@ -61,7 +61,8 @@ namespace Fishy.Utils
             // Try to stop spammers from spam joining, spammer get scammed!
             foreach (var pl in Fishy.Players)
                 if (pl.SteamID == userJoining.Id) return;
-
+            if (Punish.IsBanned(userJoining.Id)) // Well, that's the best I can do
+                return;
             UpdatePlayerCount();
             Player player = new(userJoining.Id, userJoining.Name);
 
@@ -87,6 +88,7 @@ namespace Fishy.Utils
 
         void SteamMatchmaking_OnP2PSessionRequest(SteamId id)
         {
+            if (Punish.IsBanned(id)) return;
             if (Lobby.Members.Any(player => player.Id.Value.Equals(id)))
                 SteamNetworking.AcceptP2PSessionWithUser(id);
         }

@@ -79,14 +79,14 @@ namespace Fishy.Utils
 
             try
             {
+                if (Punish.IsBanned(packet.SteamId)) // Don't even bother decompressing packet data if player is banned
+                    return;
+
                 byte[] packetData = GZip.Decompress(packet.Data);
                 Dictionary<string, object> packetInfo = FPacket.FromBytes(packetData);
                 if (!packetInfo.TryGetValue("type", out object? value))
                     return;
                 string packetType = (string)value;
-
-                if (Fishy.BannedUsers.Contains(packet.SteamId.Value.ToString()))
-                    return;
 
                 switch (packetType)
                 {
