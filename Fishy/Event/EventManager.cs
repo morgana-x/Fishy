@@ -8,27 +8,93 @@ namespace Fishy.Event
     public class EventManager
     {
         public static event EventHandler<EventArgs.ChatMessageEventArgs> OnChatMessage;
-        internal static void RaiseEvent(EventArgs.ChatMessageEventArgs eventArgs)  => OnChatMessage.Invoke(null, eventArgs);
-
+        internal static void RaiseEvent(EventArgs.ChatMessageEventArgs eventArgs)
+        {
+            if (eventArgs == null) return;
+            try
+            {
+                OnChatMessage.Invoke(null, eventArgs);
+            }
+            catch(Exception ex) 
+            {
+                Console.WriteLine(ex.ToString());
+            }
+        }
 
         public static event EventHandler<EventArgs.PlayerJoinEventArgs> OnPlayerJoin;
-        internal static void RaiseEvent(EventArgs.PlayerJoinEventArgs  eventArgs)  => OnPlayerJoin.Invoke(null, eventArgs);
+        internal static void RaiseEvent(EventArgs.PlayerJoinEventArgs eventArgs)
+        {
+            if (eventArgs == null) return;
+            try
+            { 
+                OnPlayerJoin.Invoke(null, eventArgs);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+        }
 
 
         public static event EventHandler<EventArgs.PlayerLeaveEventArgs> OnPlayerLeave;
-        internal static void RaiseEvent(EventArgs.PlayerLeaveEventArgs eventArgs)  => OnPlayerLeave.Invoke(null, eventArgs);
+        internal static void RaiseEvent(EventArgs.PlayerLeaveEventArgs eventArgs)
+        {
+            if (eventArgs == null) return;
+            try
+            { 
+                OnPlayerLeave.Invoke(null, eventArgs);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+        }
 
 
         public static event EventHandler<EventArgs.ActorSpawnEventArgs> OnActorSpawn;
-        internal static void RaiseEvent(EventArgs.ActorSpawnEventArgs  eventArgs)  => OnActorSpawn.Invoke(null, eventArgs);
-
+        internal static void RaiseEvent(EventArgs.ActorSpawnEventArgs eventArgs)
+        {
+            if (eventArgs == null) return;
+            try
+            {
+                OnActorSpawn.Invoke(null, eventArgs);
+            
+            }
+            catch(Exception ex) 
+            {
+                Console.WriteLine(ex.ToString());
+            }
+        }
 
         public static event EventHandler<EventArgs.ActorDespawnEventArgs> OnActorDespawn;
-        internal static void RaiseEvent(EventArgs.ActorDespawnEventArgs eventArgs) => OnActorDespawn.Invoke(null, eventArgs);
-
+        internal static void RaiseEvent(EventArgs.ActorDespawnEventArgs eventArgs)
+        {
+            if (eventArgs == null) return;
+            try
+            { 
+                OnActorDespawn.Invoke(null, eventArgs);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+        }
 
         public static event EventHandler<EventArgs.ActorActionEventArgs> OnActorAction;
-        internal static void RaiseEvent(EventArgs.ActorActionEventArgs eventArgs)  => OnActorAction.Invoke(null, eventArgs);
+        internal static void RaiseEvent(EventArgs.ActorActionEventArgs eventArgs)
+        {
+            if (eventArgs == null) return;
+            try
+            { 
+                OnActorAction.Invoke(null, eventArgs);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+        }
+
+       
     }
 }
 namespace Fishy.Event.EventArgs

@@ -1,6 +1,5 @@
 ﻿using Fishy.Chat;
 using Fishy.Event;
-using Fishy.Extensions;
 using Fishy.Helper;
 using Fishy.Models;
 using Fishy.Models.Packets;
@@ -179,7 +178,7 @@ namespace Fishy.Utils
 
                 }
             } catch (Exception ex) {
-                Console.WriteLine(DateTime.Now.ToString("dd.MM HH:mm:ss") + " Error: " + ex.Message);
+                Console.WriteLine(DateTime.Now.ToString("dd.MM HH:mm:ss") + "Packet Handling Error!: " + ex.ToString());
             }
             
         }

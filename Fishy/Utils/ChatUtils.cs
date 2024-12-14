@@ -45,7 +45,6 @@ namespace Fishy.Utils
             return null;
         }
         public static Player? FindPlayer(SteamId id)
-            => Fishy.Players.FirstOrDefault(p => p.SteamID == id) ?? null;
-        
+            => Fishy.Players.FirstOrDefault(p => p.SteamID == id) ?? null;      
     }
 }
